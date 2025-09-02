@@ -18,12 +18,33 @@ export const auth = {
 
   // Set user in localStorage
   setUser(signInResponse: SignInResponse): UserData {
-    const userData: UserData = {
-      access_token: signInResponse.access_token,
-      wallet_address: signInResponse.wallet_address,
-      network: signInResponse.network,
-      email: signInResponse.email,
-    };
+    let userData: UserData;
+    
+    // Handle different response formats (cavos-sdk vs wallet vs direct API)
+    if (signInResponse.data) {
+      // Cavos SDK or wallet format
+      userData = {
+        access_token: signInResponse.data.token,
+        wallet_address: signInResponse.data.user.wallet_address || signInResponse.data.user.id,
+        network: process.env.NEXT_PUBLIC_STARKNET_NETWORK || 'sepolia',
+        email: signInResponse.data.user.email,
+        wallet_name: signInResponse.data.user.wallet_name,
+        auth_method: signInResponse.method || 'social',
+      };
+    } else {
+      // Direct API format - ensure required fields are present
+      if (!signInResponse.access_token || !signInResponse.wallet_address) {
+        throw new Error('Missing required authentication data');
+      }
+      
+      userData = {
+        access_token: signInResponse.access_token,
+        wallet_address: signInResponse.wallet_address,
+        network: signInResponse.network || process.env.NEXT_PUBLIC_STARKNET_NETWORK || 'sepolia',
+        email: signInResponse.email,
+        auth_method: 'email',
+      };
+    }
     
     if (typeof window !== 'undefined') {
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(userData));
