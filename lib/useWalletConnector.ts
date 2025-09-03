@@ -3,46 +3,51 @@
 import { useCallback, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { connectWalletAtom, disconnectWalletAtom, walletStateAtom } from './wallet-atoms';
+import { connect } from '@starknet-io/get-starknet';
+import { RpcProvider, WalletAccount } from 'starknet';
 
 export const useWalletConnector = () => {
   const [walletState] = useAtom(walletStateAtom);
   const [, connectWallet] = useAtom(connectWalletAtom);
   const [, disconnectWallet] = useAtom(disconnectWalletAtom);
 
-  const connect = useCallback(async () => {
+  const connectModern = useCallback(async () => {
     try {
-      // Check if wallet is available in window
-      if (typeof window === 'undefined' || !window.starknet) {
-        throw new Error('Starknet wallet not found. Please install Argent X or Braavos.');
+      const nodeUrl = 'https://starknet-sepolia.public.blastapi.io/rpc/v0_8';
+      const myFrontendProviderUrl = new RpcProvider({ nodeUrl });
+      
+      // Use get-starknet v4+ modal to select wallet
+      const selectedWalletSWO = await connect({ 
+        modalMode: 'alwaysAsk', 
+        modalTheme: 'dark' 
+      });
+
+      if (!selectedWalletSWO) {
+        throw new Error('No wallet selected');
       }
 
-      const starknet = window.starknet;
-      
-      // Enable the wallet
-      await starknet.enable();
-      
-      if (!starknet.isConnected) {
-        throw new Error('Failed to connect wallet');
-      }
+      // Connect using WalletAccount
+      const myWalletAccount = await WalletAccount.connect(
+        myFrontendProviderUrl ,
+        selectedWalletSWO
+      );
 
-      // Get wallet details
-      const address = starknet.selectedAddress || starknet.account?.address;
-      
-      if (!address) {
+      if (!myWalletAccount.address) {
         throw new Error('No wallet address found');
       }
 
-      const chainId = starknet.chainId || await starknet.provider?.getChainId?.() || 'unknown';
-      
-      // Get wallet info
-      const walletName = starknet.name || 'Starknet Wallet';
-      const walletIcon = starknet.icon || null;
+      // Get wallet details
+      const address = myWalletAccount.address;
+      // const chainId = selectedWalletSWO.chainId || 'unknown';
+      const walletName = selectedWalletSWO.name || 'Starknet Wallet';
+      // const walletIcon = selectedWalletSWO.icon || null;
 
       connectWallet({
         address: address,
-        chainId: chainId,
+        // chainId: chainId,
         walletName,
-        walletIcon,
+        // walletIcon,
+        account: myWalletAccount,
       });
 
       return { success: true, address, walletName };
@@ -57,63 +62,23 @@ export const useWalletConnector = () => {
     return { success: true };
   }, [disconnectWallet]);
 
-  // Auto-reconnect on page load if wallet was previously connected
+  // Log wallet state changes for debugging
   useEffect(() => {
-    const autoReconnect = async () => {
-      if (typeof window === 'undefined' || !window.starknet) return;
-      
-      try {
-        const starknet = window.starknet;
-        
-        // Check if wallet is still connected
-        if (!starknet.isConnected) {
-          if (walletState.isConnected) {
-            disconnectWallet();
-          }
-          return;
-        }
-
-        // Get current address
-        const currentAddress = starknet.selectedAddress || starknet.account?.address;
-        
-        if (!currentAddress) {
-          if (walletState.isConnected) {
-            disconnectWallet();
-          }
-          return;
-        }
-
-        // If stored wallet matches current wallet, keep connection
-        if (walletState.address && walletState.address === currentAddress) {
-          return;
-        }
-
-        // Update wallet state if address changed or not stored
-        if (walletState.isConnected || starknet.isConnected) {
-          const chainId = starknet.chainId || 'unknown';
-          connectWallet({
-            address: currentAddress,
-            chainId: chainId,
-            walletName: starknet.name || walletState.walletName || 'Starknet Wallet',
-            walletIcon: starknet.icon || walletState.walletIcon,
-          });
-        }
-      } catch (error) {
-        console.error('Auto-reconnect failed:', error);
-        disconnectWallet();
-      }
-    };
-
-    // Run auto-reconnect on mount
-    autoReconnect();
-  }, [walletState.isConnected, walletState.address, connectWallet, disconnectWallet]);
+    console.log('Wallet state changed:', {
+      isConnected: walletState.isConnected,
+      address: walletState.address,
+      walletName: walletState.walletName,
+      hasAccount: !!walletState.account
+    });
+  }, [walletState]);
 
   return {
     walletState,
-    connect,
+    connect: connectModern,
     disconnect,
     isConnected: walletState.isConnected,
     address: walletState.address,
     walletName: walletState.walletName,
+    account: walletState.account,
   };
 };

@@ -5,6 +5,8 @@ export interface ApiToken {
   image_url?: string;
   amount: number;
   creator_address: string;
+  contract_address?: string;
+  website?: string;
   created_at: string;
 }
 
@@ -54,6 +56,8 @@ export class TokenService {
     ticker: string;
     creator_address: string;
     amount?: number;
+    contract_address?: string;
+    website?: string;
     image_file?: string;
   }): Promise<{ data?: ApiToken; error?: string }> {
     try {

@@ -57,13 +57,13 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
         
         <nav className="flex flex-col gap-4 items-center w-full">
           <a
-            href="#"
+            href="/"
             className="text-white text-sm hover:opacity-80 transition-opacity duration-200 text-center"
           >
             Home
           </a>
           <a
-            href="#"
+            href="/profile"
             className="text-[#a1a1aa] text-sm hover:text-white transition-colors duration-200 text-center"
           >
             Profile
@@ -174,7 +174,7 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
               Home
             </a>
             <a
-              href="#"
+              href="/profile"
               onClick={closeMenu}
               className="text-[#a1a1aa] text-xl hover:text-white transition-colors duration-200"
             >

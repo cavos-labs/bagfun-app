@@ -60,9 +60,32 @@ export default function TokenCard({ token }: TokenCardProps) {
         <div className="text-[#a1a1aa] text-sm sm:text-base truncate">
           {token.name}
         </div>
-        <div className="text-[#a1a1aa] text-xs sm:text-sm truncate">
-          {token.creator_address.slice(0, 6)}...{token.creator_address.slice(-4)}
-        </div>
+        {token.website && (
+          <div className="text-[#a1a1aa] text-xs truncate">
+            <a 
+              href={token.website} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors duration-200 hover:underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              🌐 {token.website.replace(/^https?:\/\//, '')}
+            </a>
+          </div>
+        )}
+        {token.contract_address && (
+          <div className="text-[#a1a1aa] text-xs truncate">
+            <a 
+              href={`https://voyager.online/contract/${token.contract_address}`}
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors duration-200 hover:underline"
+              onClick={(e) => e.stopPropagation()}
+            >
+              📄 {token.contract_address.slice(0, 6)}...{token.contract_address.slice(-4)}
+            </a>
+          </div>
+        )}
         <div className="flex items-center justify-between">
           <span className="text-white font-regular text-sm sm:text-base">
             Supply: {formatAmount(token.amount)}

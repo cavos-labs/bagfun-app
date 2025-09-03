@@ -22,6 +22,7 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
   const [error, setError] = useState('');
   const [isVisible, setIsVisible] = useState(false);
   const [walletLoading, setWalletLoading] = useState(false);
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
   
   const { connect: connectWallet } = useWalletConnector();
 
@@ -78,6 +79,7 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
 
   const handleWalletConnect = async () => {
     setWalletLoading(true);
+    setWalletModalOpen(true); // Hide login modal while wallet modal is open
     setError('');
     
     try {
@@ -108,6 +110,7 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
       setError(error.message || 'Failed to connect wallet');
     } finally {
       setWalletLoading(false);
+      setWalletModalOpen(false); // Show login modal again
     }
   };
 
@@ -120,20 +123,22 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
   if (!isOpen) return null;
 
   return (
-    <div className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-200 ${
-      isVisible ? 'opacity-100' : 'opacity-0'
+    <div className={`fixed inset-0 flex items-center justify-center transition-opacity duration-200 ${
+      walletModalOpen ? 'z-0' : 'z-50'
+    } ${
+      isVisible && !walletModalOpen ? 'opacity-100' : 'opacity-0'
     }`}>
       {/* Backdrop */}
       <div 
         className={`absolute inset-0 transition-opacity duration-200 ${
-          isVisible ? 'bg-opacity-40' : 'bg-opacity-0'
+          isVisible && !walletModalOpen ? 'bg-opacity-40' : 'bg-opacity-0'
         }`}
         onClick={handleClose}
       />
       
       {/* Modal */}
       <div className={`relative w-full max-w-md mx-4 bg-black rounded-2xl p-8 border border-[#333333] transform transition-all duration-200 ${
-        isVisible 
+        isVisible && !walletModalOpen
           ? 'translate-y-0 scale-100 opacity-100' 
           : 'translate-y-4 scale-95 opacity-0'
       }`}>

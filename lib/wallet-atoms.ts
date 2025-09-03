@@ -1,7 +1,6 @@
 'use client';
 
 import { atom } from 'jotai';
-import { atomWithStorage } from 'jotai/utils';
 
 export interface WalletState {
   address: string | null;
@@ -9,6 +8,7 @@ export interface WalletState {
   chainId: string | null;
   walletName: string | null;
   walletIcon: string | null;
+  account: any | null; // Store the wallet account for transactions
 }
 
 const initialWalletState: WalletState = {
@@ -17,9 +17,10 @@ const initialWalletState: WalletState = {
   chainId: null,
   walletName: null,
   walletIcon: null,
+  account: null,
 };
 
-export const walletStateAtom = atomWithStorage<WalletState>('wallet-state', initialWalletState);
+export const walletStateAtom = atom<WalletState>(initialWalletState);
 
 export const isWalletConnectedAtom = atom(
   (get) => get(walletStateAtom).isConnected

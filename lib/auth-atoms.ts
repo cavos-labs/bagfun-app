@@ -29,7 +29,7 @@ export interface SignInResponse {
   method?: 'email' | 'social' | 'wallet';
 }
 
-// User data atom
+// User data atom - session only, no persistence
 export const userAtom = atom<UserData | null>(null);
 
 // Computed atom to check if user is authenticated
@@ -67,10 +67,7 @@ export const signInAtom = atom(
         };
       }
       
-      // Save to localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('cavos_user', JSON.stringify(userData));
-      }
+      // Don't save to localStorage - session only
       
       set(userAtom, userData);
     }
@@ -86,26 +83,12 @@ export const signOutAtom = atom(null, (get, set) => {
     set(disconnectWalletAtom);
   }
   
-  // Remove from localStorage
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('cavos_user');
-  }
-  
+  // Clear user session
   set(userAtom, null);
 });
 
-// Initialize user from localStorage
+// Initialize user - no longer loads from localStorage (session only)
 export const initUserAtom = atom(null, (get, set) => {
-  if (typeof window !== 'undefined') {
-    try {
-      const stored = localStorage.getItem('cavos_user');
-      if (stored) {
-        const userData = JSON.parse(stored);
-        set(userAtom, userData);
-      }
-    } catch (error) {
-      console.error('Error loading user from localStorage:', error);
-      localStorage.removeItem('cavos_user');
-    }
-  }
+  // User starts fresh each session
+  set(userAtom, null);
 });
