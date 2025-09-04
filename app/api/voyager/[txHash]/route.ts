@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { txHash: string } }
+  { params }: { params: Promise<{ txHash: string }> }
 ) {
   try {
-    const { txHash } = params;
+    const { txHash } = await params;
     
     if (!txHash) {
       return NextResponse.json(
