@@ -112,7 +112,7 @@ export default function CreateTokenModal({ isOpen, onClose, onTokenCreated }: Cr
     await new Promise(resolve => setTimeout(resolve, 15000));
 
     // Get transaction details to extract contract address
-    const txDetails = await axios.get(`https://voyager.online/api/txn/${createTxResult.transaction_hash}`);
+    const txDetails = await axios.get(`/api/voyager/${createTxResult.transaction_hash}`);
 
     const memecoinCreatedEvent = txDetails.data.receipt.events.find((event: any) =>
       event.name === "OwnershipTransferred"
@@ -249,7 +249,7 @@ export default function CreateTokenModal({ isOpen, onClose, onTokenCreated }: Cr
 
         await new Promise(resolve => setTimeout(resolve, 15000));
 
-        const txDetails = await axios.get(`https://voyager.online/api/txn/${txResult.txHash}`);
+        const txDetails = await axios.get(`/api/voyager/${txResult.txHash}`);
 
         console.log(txDetails);
 
