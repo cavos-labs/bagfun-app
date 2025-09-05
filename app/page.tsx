@@ -9,6 +9,7 @@ import CreateTokenModal from "@/components/CreateTokenModal";
 import TokenBalancesModal from "@/components/TokenBalancesModal";
 import DepositModal from "@/components/DepositModal";
 import WithdrawModal from "@/components/WithdrawModal";
+import TokenSuccessModal from "@/components/TokenSuccessModal";
 import { TokenService, ApiToken } from "@/lib/tokenService";
 import { getBalanceOf } from "cavos-service-sdk";
 import { userAtom } from "@/lib/auth-atoms";
@@ -42,6 +43,10 @@ export default function Home() {
   } = useWalletConnector();
   const [starkBalance, setStarkBalance] = useState(0);
 
+  // Success modal state
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [createdToken, setCreatedToken] = useState<ApiToken | null>(null);
+
   const filteredTokens = tokens.filter(
     (token) =>
       token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -67,6 +72,15 @@ export default function Home() {
   const handleTokenCreated = (token: any) => {
     // Add the new token to the list
     setTokens((prevTokens) => [token, ...prevTokens]);
+
+    // Show success notification
+    setCreatedToken(token);
+    setShowSuccessModal(true);
+  };
+
+  const handleSuccessModalClose = () => {
+    setShowSuccessModal(false);
+    setCreatedToken(null);
   };
 
   const fetchTokens = async () => {
@@ -162,7 +176,7 @@ export default function Home() {
                         </p>
                       </div>
                     </div>
-                    
+
                     {/* Action Buttons */}
                     <div className="flex items-center gap-2 w-full sm:w-auto">
                       <button
@@ -186,7 +200,7 @@ export default function Home() {
                         <span className="hidden sm:inline">Deposit</span>
                         <span className="sm:hidden">+</span>
                       </button>
-                      
+
                       {/* Withdraw button - only show for Cavos users */}
                       {user && user.auth_method !== "wallet" && (
                         <button
@@ -336,6 +350,15 @@ export default function Home() {
           onClose={() => setIsCreateTokenModalOpen(false)}
           onTokenCreated={handleTokenCreated}
         />
+
+        {/* Success Modal - Now in dashboard */}
+        {createdToken && (
+          <TokenSuccessModal
+            isOpen={showSuccessModal}
+            onClose={handleSuccessModalClose}
+            token={createdToken}
+          />
+        )}
 
         {/* Token Balances Modal */}
         <TokenBalancesModal
