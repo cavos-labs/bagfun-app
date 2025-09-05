@@ -114,7 +114,7 @@ export default function Home() {
           console.error("Error fetching wallet balance:", error);
           setStarkBalance(0);
         }
-      } else if (user && user.access_token) {
+      } else if (user && user.auth_method !== "wallet") {
         console.log("Fetching balance for Cavos user:", user.wallet_address);
         // Fetch balance for Cavos authenticated users
         try {

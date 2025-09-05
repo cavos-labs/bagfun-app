@@ -133,7 +133,7 @@ export default function TokenPage() {
           }
         }
       }
-      else if (user && user.access_token && user.wallet_address) {
+      else if (user && user.auth_method !== "wallet") {
         console.log('Fetching balance for Cavos user:', user.wallet_address);
         // Fetch balances for Cavos authenticated users using getBalanceOf
         try {
