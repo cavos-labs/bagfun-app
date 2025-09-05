@@ -20,6 +20,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'schizodio.xyz',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
