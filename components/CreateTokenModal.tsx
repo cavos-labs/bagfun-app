@@ -8,7 +8,7 @@ import { TokenService } from '@/lib/tokenService';
 import Image from 'next/image';
 import { CavosAuth, formatAmount, getBalanceOf } from 'cavos-service-sdk';
 import { Contract, CallData, cairo, RpcProvider } from 'starknet';
-import { formatPercentage, getERC20Balance } from '@/lib/utils';
+import { formatPercentage } from '@/lib/utils';
 import { MEMECOIN_FACTORY_ABI } from '@/app/abis/MemecoinFactory';
 import { STRK_ABI } from '@/app/abis/STRK';
 import axios from 'axios';
@@ -38,42 +38,33 @@ export default function CreateTokenModal({ isOpen, onClose, onTokenCreated }: Cr
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchStarkBalance = async () => {
-    // For Cavos authenticated users
-    if (isWalletConnected && walletAddress) {
+    const walletAddr = isWalletConnected ? walletAddress : user?.wallet_address;
+    
+    if (walletAddr) {
       setBalanceLoading(true);
       try {
-        // Use getERC20Balance utility function
-        const balance = await getERC20Balance(
-          walletAddress,
-          "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
-          18
-        );
-        setStarkBalance(balance);
-      } catch (error) {
-        console.error('Error fetching STRK balance:', error);
-        setStarkBalance(null);
-      } finally {
-        setBalanceLoading(false);
-      }
-    }
-    else if (user?.wallet_address && user?.access_token) {
-      setBalanceLoading(true);
-      try {
-        const currentBalance = await getBalanceOf(
-          user.wallet_address,
+        const result = await getBalanceOf(
+          walletAddr,
           "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
           "18",
-          user.access_token
+          process.env.NEXT_PUBLIC_CAVOS_APP_ID || ''
         );
-        console.log('STRK Balance in modal:', currentBalance);
-        setStarkBalance(currentBalance.balance);
+        
+        if (result.error) {
+          console.error('Error fetching STRK balance:', result.error);
+          setStarkBalance(null);
+        } else {
+          console.log('STRK Balance in modal:', result.balance);
+          setStarkBalance(result.balance);
+        }
       } catch (error) {
         console.error('Error fetching STRK balance:', error);
         setStarkBalance(null);
       } finally {
         setBalanceLoading(false);
       }
-      return;
+    } else {
+      setStarkBalance(null);
     }
   };
 

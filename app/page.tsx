@@ -7,6 +7,7 @@ import SearchBar from '@/components/SearchBar';
 import TokenCard from '@/components/TokenCard';
 import CreateTokenModal from '@/components/CreateTokenModal';
 import TokenBalancesModal from '@/components/TokenBalancesModal';
+import DepositModal from '@/components/DepositModal';
 import { TokenService, ApiToken } from '@/lib/tokenService';
 import { getBalanceOf } from 'cavos-service-sdk';
 import { userAtom } from '@/lib/auth-atoms';
@@ -18,6 +19,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isCreateTokenModalOpen, setIsCreateTokenModalOpen] = useState(false);
   const [isTokenBalancesModalOpen, setIsTokenBalancesModalOpen] = useState(false);
+  const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [tokens, setTokens] = useState<ApiToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,6 +38,10 @@ export default function Home() {
 
   const handleCreateToken = () => {
     setIsCreateTokenModalOpen(true);
+  };
+
+  const handleDepositClick = () => {
+    setIsDepositModalOpen(true);
   };
 
   const handleTokenCreated = (token: any) => {
@@ -94,10 +100,11 @@ export default function Home() {
             user.wallet_address,
             "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
             "18",
-            user.access_token
+            process.env.NEXT_PUBLIC_CAVOS_APP_ID || ''
           );
           console.log('Cavos balance result:', currentBalance);
           setStarkBalance(currentBalance.balance);
+
         } catch (error) {
           console.error('Error fetching Cavos user balance:', error);
           setStarkBalance(0);
@@ -139,6 +146,15 @@ export default function Home() {
                         {starkBalance.toLocaleString()}
                       </p>
                     </div>
+                    <button
+                      onClick={handleDepositClick}
+                      className="ml-2 w-6 h-6 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center transition-colors duration-200"
+                      title="Add STRK"
+                    >
+                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -174,7 +190,9 @@ export default function Home() {
           ) : error ? (
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
-                <div className="text-red-500 text-6xl mb-4">⚠️</div>
+                <svg className="w-24 h-24 mx-auto mb-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                </svg>
                 <p className="text-red-400 mb-4">{error}</p>
                 <button
                   onClick={fetchTokens}
@@ -187,7 +205,9 @@ export default function Home() {
           ) : filteredTokens.length === 0 ? (
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
-                <div className="text-[#a1a1aa] text-6xl mb-4">🚀</div>
+                <svg className="w-24 h-24 mx-auto mb-4 text-[#a1a1aa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+                </svg>
                 <p className="text-[#a1a1aa] mb-4">
                   {searchQuery ? 'No tokens match your search' : 'No tokens found'}
                 </p>
@@ -243,6 +263,13 @@ export default function Home() {
           isOpen={isTokenBalancesModalOpen}
           onClose={() => setIsTokenBalancesModalOpen(false)}
           tokens={tokens}
+        />
+
+        {/* Deposit Modal */}
+        <DepositModal
+          isOpen={isDepositModalOpen}
+          onClose={() => setIsDepositModalOpen(false)}
+          walletAddress={isWalletConnected ? walletAddress || undefined : user?.wallet_address || undefined}
         />
       </div>
     </div>

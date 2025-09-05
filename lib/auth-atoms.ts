@@ -29,8 +29,32 @@ export interface SignInResponse {
   method?: 'email' | 'social' | 'wallet';
 }
 
-// User data atom - session only, no persistence
-export const userAtom = atom<UserData | null>(null);
+// Internal atom that holds the user data
+const baseUserAtom = atom<UserData | null>(null);
+
+// Atom to track if we've initialized from sessionStorage
+const isInitializedAtom = atom<boolean>(false);
+
+// User data atom with sessionStorage sync
+export const userAtom = atom(
+  (get) => get(baseUserAtom),
+  (get, set, newValue: UserData | null) => {
+    set(baseUserAtom, newValue);
+    
+    // Sync to sessionStorage on client-side only
+    if (typeof window !== 'undefined') {
+      try {
+        if (newValue === null) {
+          window.sessionStorage.removeItem('bagfun-user-session');
+        } else {
+          window.sessionStorage.setItem('bagfun-user-session', JSON.stringify(newValue));
+        }
+      } catch {
+        // Ignore sessionStorage errors
+      }
+    }
+  }
+);
 
 // Computed atom to check if user is authenticated
 export const isAuthenticatedAtom = atom((get) => {
@@ -67,8 +91,7 @@ export const signInAtom = atom(
         };
       }
       
-      // Don't save to localStorage - session only
-      
+      // Save to sessionStorage via atomWithStorage
       set(userAtom, userData);
     }
   }
@@ -87,8 +110,26 @@ export const signOutAtom = atom(null, (get, set) => {
   set(userAtom, null);
 });
 
-// Initialize user - no longer loads from localStorage (session only)
+// Export the initialization status
+export const isInitializedAtom_ = atom((get) => get(isInitializedAtom));
+
+// Initialize user - loads from sessionStorage on client-side
 export const initUserAtom = atom(null, (get, set) => {
-  // User starts fresh each session
-  set(userAtom, null);
+  // Only load from sessionStorage on client-side
+  if (typeof window !== 'undefined') {
+    try {
+      const stored = window.sessionStorage.getItem('bagfun-user-session');
+      if (stored) {
+        const userData = JSON.parse(stored);
+        set(baseUserAtom, userData);
+      }
+      set(isInitializedAtom, true);
+    } catch {
+      // Ignore sessionStorage errors
+      set(isInitializedAtom, true);
+    }
+  } else {
+    // On server-side, mark as initialized immediately
+    set(isInitializedAtom, true);
+  }
 });

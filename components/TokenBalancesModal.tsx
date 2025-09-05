@@ -5,6 +5,8 @@ import { useAtom } from 'jotai';
 import { userAtom } from '@/lib/auth-atoms';
 import { ApiToken } from '@/lib/tokenService';
 import { getBalanceOf } from 'cavos-service-sdk';
+import { getERC20Balance } from '@/lib/utils';
+import { useWalletConnector } from '@/lib/useWalletConnector';
 import Image from 'next/image';
 
 interface TokenBalancesModalProps {
@@ -22,6 +24,7 @@ interface TokenBalance {
 
 export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBalancesModalProps) {
   const [user] = useAtom(userAtom);
+  const { isConnected: isWalletConnected, address: walletAddress } = useWalletConnector();
   const [isVisible, setIsVisible] = useState(false);
   const [tokenBalances, setTokenBalances] = useState<TokenBalance[]>([]);
   const [loading, setLoading] = useState(false);
@@ -34,22 +37,58 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
   };
 
   const fetchTokenBalance = async (token: ApiToken): Promise<number> => {
-    if (!user?.wallet_address || !user?.access_token || !token.contract_address) {
-      throw new Error('Missing required data');
+    if (!token.contract_address) {
+      throw new Error('Missing token contract address');
     }
 
-    const result = await getBalanceOf(
-      user.wallet_address,
-      token.contract_address,
-      "18", // Default to 18 decimals
-      user.access_token
-    );
-
-    return result.balance || 0;
+    // For Starknet wallet users
+    if (isWalletConnected && walletAddress) {
+      console.log('Fetching balance for Starknet wallet user:', walletAddress, token.contract_address);
+      try {
+        const balance = await getERC20Balance(walletAddress, token.contract_address, 18);
+        console.log('Wallet balance result:', balance);
+        return balance;
+      } catch (error) {
+        console.error('Error fetching wallet token balance:', error);
+        throw error;
+      }
+    }
+    // For Cavos authenticated users
+    else if (user?.wallet_address && user?.access_token) {
+      console.log('Fetching balance for Cavos user:', user.wallet_address, token.contract_address);
+      try {
+        const result = await getBalanceOf(
+          user.wallet_address,
+          token.contract_address,
+          "18", // Default to 18 decimals
+          process.env.NEXT_PUBLIC_CAVOS_APP_ID || ''
+        );
+        console.log('Cavos balance result:', result);
+        return result.balance || 0;
+      } catch (error) {
+        console.error('Error fetching Cavos token balance:', error);
+        throw error;
+      }
+    } else {
+      throw new Error('No wallet connected or user authenticated');
+    }
   };
 
   const loadAllBalances = async () => {
-    if (!user?.wallet_address || tokens.length === 0) return;
+    // Check if user has wallet connected OR is authenticated with Cavos
+    if ((!isWalletConnected || !walletAddress) && (!user?.wallet_address || !user?.access_token)) {
+      console.log('No wallet or user authenticated, skipping balance loading');
+      return;
+    }
+    
+    if (tokens.length === 0) {
+      console.log('No tokens to load balances for');
+      return;
+    }
+
+    console.log('Loading balances for', tokens.length, 'tokens');
+    console.log('Wallet connected:', isWalletConnected, walletAddress);
+    console.log('User authenticated:', !!user?.access_token, user?.wallet_address);
 
     setLoading(true);
     
@@ -107,9 +146,12 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
-      loadAllBalances();
+      // Add a small delay to ensure wallet connection state is properly initialized
+      setTimeout(() => {
+        loadAllBalances();
+      }, 100);
     }
-  }, [isOpen]);
+  }, [isOpen, isWalletConnected, walletAddress, user]);
 
   if (!isOpen) return null;
 
@@ -120,7 +162,7 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
       {/* Backdrop */}
       <div 
         className={`absolute inset-0 transition-opacity duration-200 ${
-          isVisible ? 'bg-opacity-40' : 'bg-opacity-0'
+          isVisible ? ' bg-opacity-40' : 'bg-opacity-0'
         }`}
         onClick={handleClose}
       />
@@ -166,7 +208,9 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
           ) : tokenBalances.length === 0 ? (
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <div className="text-[#a1a1aa] text-4xl mb-4">💰</div>
+                <svg className="w-16 h-16 mx-auto mb-4 text-[#a1a1aa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
                 <p className="text-[#a1a1aa] text-sm">
                   No token balances found
                 </p>

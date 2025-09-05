@@ -8,7 +8,7 @@ export interface UserProfile {
 }
 
 export class ProfileService {
-  static async getUserProfile(accessToken: string): Promise<{ profile?: UserProfile; error?: string }> {
+  static async getUserProfile(accessToken: string): Promise<{ profile?: UserProfile; accessToken?: string; error?: string }> {
     try {
       const response = await fetch('/api/profile', {
         method: 'GET',
@@ -37,7 +37,10 @@ export class ProfileService {
         created_at: responseData.data.created_at,
       };
 
-      return { profile };
+      return { 
+        profile,
+        accessToken: responseData.accessToken 
+      };
     } catch (error: any) {
       console.error('Error fetching user profile:', error);
       return { error: error.message || 'Failed to fetch profile' };

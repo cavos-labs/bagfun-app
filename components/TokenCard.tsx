@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { ApiToken } from '@/lib/tokenService';
 
 interface TokenCardProps {
@@ -6,6 +7,14 @@ interface TokenCardProps {
 }
 
 export default function TokenCard({ token }: TokenCardProps) {
+  const router = useRouter();
+  
+  const handleClick = () => {
+    if (token.contract_address) {
+      router.push(`/token/${token.contract_address}`);
+    }
+  };
+  
   const formatAmount = (amount: number) => {
     if (amount >= 1000000000) {
       return `${(amount / 1000000000).toFixed(1)}B`;
@@ -33,7 +42,10 @@ export default function TokenCard({ token }: TokenCardProps) {
   };
 
   return (
-    <div className="bg-[#141414] rounded-xl lg:rounded-2xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-[#1a1a1a] transition-colors duration-200 cursor-pointer">
+    <div 
+      onClick={handleClick}
+      className="bg-[#141414] rounded-xl lg:rounded-2xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-[#1a1a1a] transition-colors duration-200 cursor-pointer"
+    >
       {/* Left: Token Image */}
       <div className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-xl lg:rounded-2xl overflow-hidden bg-white flex-shrink-0">
         {token.image_url ? (
@@ -66,10 +78,13 @@ export default function TokenCard({ token }: TokenCardProps) {
               href={token.website} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:text-white transition-colors duration-200 hover:underline"
+              className="hover:text-white transition-colors duration-200 hover:underline flex items-center gap-1"
               onClick={(e) => e.stopPropagation()}
             >
-              🌐 {token.website.replace(/^https?:\/\//, '')}
+              <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+              </svg>
+              {token.website.replace(/^https?:\/\//, '')}
             </a>
           </div>
         )}
@@ -79,10 +94,13 @@ export default function TokenCard({ token }: TokenCardProps) {
               href={`https://voyager.online/contract/${token.contract_address}`}
               target="_blank" 
               rel="noopener noreferrer"
-              className="hover:text-white transition-colors duration-200 hover:underline"
+              className="hover:text-white transition-colors duration-200 hover:underline flex items-center gap-1"
               onClick={(e) => e.stopPropagation()}
             >
-              📄 {token.contract_address.slice(0, 6)}...{token.contract_address.slice(-4)}
+              <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              {token.contract_address.slice(0, 6)}...{token.contract_address.slice(-4)}
             </a>
           </div>
         )}
