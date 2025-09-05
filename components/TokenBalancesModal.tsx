@@ -7,7 +7,7 @@ import { ApiToken } from '@/lib/tokenService';
 import { getBalanceOf } from 'cavos-service-sdk';
 import { getERC20Balance } from '@/lib/utils';
 import { useWalletConnector } from '@/lib/useWalletConnector';
-import Image from 'next/image';
+import OptimizedImage from './OptimizedImage';
 
 interface TokenBalancesModalProps {
   isOpen: boolean;
@@ -214,12 +214,20 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
                   {/* Token Image */}
                   <div className="w-12 h-12 rounded-full overflow-hidden bg-white flex-shrink-0">
                     {token.image_url ? (
-                      <Image
+                      <OptimizedImage
                         src={token.image_url}
                         alt={token.name}
                         width={48}
                         height={48}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-full"
+                        priority={false}
+                        fallbackComponent={
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 rounded-full">
+                            <span className="text-white font-bold text-sm">
+                              {token.ticker.charAt(0)}
+                            </span>
+                          </div>
+                        }
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">

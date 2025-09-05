@@ -20,6 +20,7 @@ import { connect } from '@starknet-io/get-starknet';
 import { AVNU } from '@/app/abis/AVNU';
 import { ERC20_ABI } from '@/app/abis/ERC20';
 import { executeSwap, fetchQuotes, Quote } from '@avnu/avnu-sdk';
+import OptimizedImage from '@/components/OptimizedImage';
 
 interface Token {
   id: string;
@@ -638,12 +639,20 @@ export default function TokenPage() {
                   <div className="flex items-center space-x-4 mb-4">
                     <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
                       {token.image_url ? (
-                        <Image
+                        <OptimizedImage
                           src={token.image_url}
                           alt={token.name}
                           width={64}
                           height={64}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover rounded-full"
+                          priority={true}
+                          fallbackComponent={
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 rounded-full">
+                              <span className="text-white font-bold text-2xl">
+                                {token.ticker?.charAt(0) || token.name?.charAt(0) || 'T'}
+                              </span>
+                            </div>
+                          }
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">

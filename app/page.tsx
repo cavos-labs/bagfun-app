@@ -15,6 +15,7 @@ import { userAtom } from "@/lib/auth-atoms";
 import { useAtom } from "jotai";
 import { useWalletConnector } from "@/lib/useWalletConnector";
 import { getERC20Balance } from "@/lib/utils";
+import { useBulkImagePreloader } from "@/lib/useImagePreloader";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,6 +27,13 @@ export default function Home() {
   const [tokens, setTokens] = useState<ApiToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Preload token images for better performance
+  const tokenImageUrls = tokens
+    .filter(token => token.image_url)
+    .map(token => token.image_url!);
+  
+  const { progress: imagePreloadProgress } = useBulkImagePreloader(tokenImageUrls);
   const [user] = useAtom(userAtom);
   const {
     isConnected: isWalletConnected,

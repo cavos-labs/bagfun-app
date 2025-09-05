@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { ApiToken } from '@/lib/tokenService';
+import OptimizedImage from './OptimizedImage';
 
 interface TokenCardProps {
   token: ApiToken;
@@ -30,9 +30,19 @@ export default function TokenCard({ token }: TokenCardProps) {
     const date = new Date(dateString);
     const now = new Date();
     const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 1) {
+    // Calculate different time units
+    const diffMinutes = Math.floor(diffTime / (1000 * 60));
+    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffMinutes < 1) {
+      return 'just now';
+    } else if (diffMinutes < 60) {
+      return diffMinutes === 1 ? '1 min ago' : `${diffMinutes} mins ago`;
+    } else if (diffHours < 24) {
+      return diffHours === 1 ? '1 hour ago' : `${diffHours} hours ago`;
+    } else if (diffDays === 1) {
       return '1 day ago';
     } else if (diffDays < 7) {
       return `${diffDays} days ago`;
@@ -49,11 +59,19 @@ export default function TokenCard({ token }: TokenCardProps) {
       {/* Left: Token Image */}
       <div className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-xl lg:rounded-2xl overflow-hidden bg-white flex-shrink-0">
         {token.image_url ? (
-          <Image
+          <OptimizedImage
             src={token.image_url}
             alt={token.name}
             fill
-            className="object-cover"
+            className="object-cover rounded-xl lg:rounded-2xl"
+            priority={false}
+            fallbackComponent={
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl lg:rounded-2xl">
+                <span className="text-white font-bold text-lg">
+                  {token.ticker.charAt(0)}
+                </span>
+              </div>
+            }
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
