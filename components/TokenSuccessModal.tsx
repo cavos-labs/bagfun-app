@@ -29,29 +29,20 @@ export default function TokenSuccessModal({
   };
 
   const generateShareText = () => {
-    const baseUrl = "https://bag.fun";
-    const tokenUrl = `${baseUrl}/token/${token.id}`;
+    const baseUrl = "https://app.bbag.fun";
+    const tokenUrl = `${baseUrl}/token/${token.contract_address}`;
 
-    const shareText = `🚀 NEW MEMECOIN ALERT! 🚀
+    const shareText = `NEW MEMECOIN ALERT!
 
-🎉 ${token.name} ($${token.ticker})
-📊 Supply: ${formatAmount(token.amount)}
-🔗 Contract: ${
-      token.contract_address
-        ? `${token.contract_address.slice(
-            0,
-            6
-          )}...${token.contract_address.slice(-4)}`
-        : "TBA"
-    }
+${token.name} ($${token.ticker})
 
-${token.website ? `🌐 Website: ${token.website}` : ""}
+${token.website ? `Website: ${token.website}` : ""}
 
-Ready to moon? 🌙 Trade now on @bagdotfun!
+Ready to moon? Trade now on @bagdotfun!
 
 ${tokenUrl}
 
-#BagFun @Starknet`;
+@Starknet`;
 
     return encodeURIComponent(shareText);
   };
@@ -145,7 +136,7 @@ ${tokenUrl}
               className="text-white text-sm font-bold"
               style={{ fontFamily: "RamaGothicBold, sans-serif" }}
             >
-              TOKEN CREATED! 🎉
+              TOKEN CREATED!
             </h2>
             <p className="text-[#a1a1aa] text-xs">Your meme coin is now live</p>
           </div>
