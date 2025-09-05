@@ -1,35 +1,43 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import Sidebar from '@/components/Sidebar';
-import SearchBar from '@/components/SearchBar';
-import TokenCard from '@/components/TokenCard';
-import CreateTokenModal from '@/components/CreateTokenModal';
-import TokenBalancesModal from '@/components/TokenBalancesModal';
-import DepositModal from '@/components/DepositModal';
-import { TokenService, ApiToken } from '@/lib/tokenService';
-import { getBalanceOf } from 'cavos-service-sdk';
-import { userAtom } from '@/lib/auth-atoms';
-import { useAtom } from 'jotai';
-import { useWalletConnector } from '@/lib/useWalletConnector';
-import { getERC20Balance } from '@/lib/utils';
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Sidebar from "@/components/Sidebar";
+import SearchBar from "@/components/SearchBar";
+import TokenCard from "@/components/TokenCard";
+import CreateTokenModal from "@/components/CreateTokenModal";
+import TokenBalancesModal from "@/components/TokenBalancesModal";
+import DepositModal from "@/components/DepositModal";
+import WithdrawModal from "@/components/WithdrawModal";
+import { TokenService, ApiToken } from "@/lib/tokenService";
+import { getBalanceOf } from "cavos-service-sdk";
+import { userAtom } from "@/lib/auth-atoms";
+import { useAtom } from "jotai";
+import { useWalletConnector } from "@/lib/useWalletConnector";
+import { getERC20Balance } from "@/lib/utils";
 
 export default function Home() {
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [isCreateTokenModalOpen, setIsCreateTokenModalOpen] = useState(false);
-  const [isTokenBalancesModalOpen, setIsTokenBalancesModalOpen] = useState(false);
+  const [isTokenBalancesModalOpen, setIsTokenBalancesModalOpen] =
+    useState(false);
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
+  const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
   const [tokens, setTokens] = useState<ApiToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [user] = useAtom(userAtom);
-  const { isConnected: isWalletConnected, address: walletAddress, account: walletAccount } = useWalletConnector();
+  const {
+    isConnected: isWalletConnected,
+    address: walletAddress,
+    account: walletAccount,
+  } = useWalletConnector();
   const [starkBalance, setStarkBalance] = useState(0);
 
-  const filteredTokens = tokens.filter(token =>
-    token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    token.ticker.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredTokens = tokens.filter(
+    (token) =>
+      token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      token.ticker.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleBagFunClick = () => {
@@ -44,10 +52,14 @@ export default function Home() {
     setIsDepositModalOpen(true);
   };
 
+  const handleWithdrawClick = () => {
+    setIsWithdrawModalOpen(true);
+  };
+
   const handleTokenCreated = (token: any) => {
-    console.log('Token created:', token);
+    console.log("Token created:", token);
     // Add the new token to the list
-    setTokens(prevTokens => [token, ...prevTokens]);
+    setTokens((prevTokens) => [token, ...prevTokens]);
   };
 
   const fetchTokens = async () => {
@@ -65,7 +77,7 @@ export default function Home() {
 
       // Balance fetching is now handled in separate useEffect
     } catch (err) {
-      setError('Failed to load tokens');
+      setError("Failed to load tokens");
     } finally {
       setLoading(false);
     }
@@ -78,39 +90,48 @@ export default function Home() {
   // Fetch balance when authentication or wallet connection changes
   useEffect(() => {
     const fetchBalance = async () => {
-      console.log('Fetching balance - isWalletConnected:', isWalletConnected, 'walletAddress:', walletAddress, 'user:', user);
-      
+      console.log(
+        "Fetching balance - isWalletConnected:",
+        isWalletConnected,
+        "walletAddress:",
+        walletAddress,
+        "user:",
+        user
+      );
+
       if (isWalletConnected && walletAddress) {
-        console.log('Fetching balance for direct wallet user:', walletAddress);
+        console.log("Fetching balance for direct wallet user:", walletAddress);
         // Fetch balance for direct wallet users
         try {
-          const currentBalance = await getERC20Balance(walletAddress, "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D", 18);
-          console.log('Wallet balance result:', currentBalance);
+          const currentBalance = await getERC20Balance(
+            walletAddress,
+            "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
+            18
+          );
+          console.log("Wallet balance result:", currentBalance);
           setStarkBalance(currentBalance);
         } catch (error) {
-          console.error('Error fetching wallet balance:', error);
+          console.error("Error fetching wallet balance:", error);
           setStarkBalance(0);
         }
-      }
-      else if (user && user.access_token) {
-        console.log('Fetching balance for Cavos user:', user.wallet_address);
+      } else if (user && user.access_token) {
+        console.log("Fetching balance for Cavos user:", user.wallet_address);
         // Fetch balance for Cavos authenticated users
         try {
           const currentBalance = await getBalanceOf(
             user.wallet_address,
             "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
             "18",
-            process.env.NEXT_PUBLIC_CAVOS_APP_ID || ''
+            process.env.NEXT_PUBLIC_CAVOS_APP_ID || ""
           );
-          console.log('Cavos balance result:', currentBalance);
+          console.log("Cavos balance result:", currentBalance);
           setStarkBalance(currentBalance.balance);
-
         } catch (error) {
-          console.error('Error fetching Cavos user balance:', error);
+          console.error("Error fetching Cavos user balance:", error);
           setStarkBalance(0);
         }
       } else {
-        console.log('No wallet or user, clearing balance');
+        console.log("No wallet or user, clearing balance");
         // Clear balance if no user and no wallet
         setStarkBalance(0);
       }
@@ -128,33 +149,77 @@ export default function Home() {
           <div className="flex flex-col lg:flex-row items-center justify-center relative gap-4 lg:gap-0">
             {/* Balance Display - Left of search */}
             {(user || isWalletConnected) && (
-              <div className="lg:absolute lg:left-0">
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl px-4 py-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full overflow-hidden">
-                      <Image
-                        src="/strk-logo.png"
-                        alt="STRK"
-                        width={24}
-                        height={24}
-                        className="w-full h-full object-cover"
-                      />
+              <div className="lg:absolute lg:left-0 w-full lg:w-auto">
+                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl px-3 sm:px-4 py-2 sm:py-3">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                    {/* Balance Info */}
+                    <div className="flex items-center gap-2">
+                      <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full overflow-hidden flex-shrink-0">
+                        <Image
+                          src="/strk-logo.png"
+                          alt="STRK"
+                          width={24}
+                          height={24}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div>
+                        <p className="text-[#a1a1aa] text-xs">Balance</p>
+                        <p className="text-white font-semibold text-sm sm:text-base">
+                          {starkBalance.toLocaleString()}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-[#a1a1aa] text-xs">Balance</p>
-                      <p className="text-white font-semibold text-sm">
-                        {starkBalance.toLocaleString()}
-                      </p>
+                    
+                    {/* Action Buttons */}
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                      <button
+                        onClick={handleDepositClick}
+                        className="flex-1 sm:flex-none bg-blue-500 hover:bg-blue-600 text-white px-2 sm:px-3 py-1.5 sm:py-1 rounded-lg text-xs font-medium transition-colors duration-200 flex items-center justify-center gap-1"
+                        title="Add STRK"
+                      >
+                        <svg
+                          className="w-3 h-3 flex-shrink-0"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={3}
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                          />
+                        </svg>
+                        <span className="hidden sm:inline">Deposit</span>
+                        <span className="sm:hidden">+</span>
+                      </button>
+                      
+                      {/* Withdraw button - only show for Cavos users */}
+                      {user && user.auth_method !== "wallet" && (
+                        <button
+                          onClick={handleWithdrawClick}
+                          className="flex-1 sm:flex-none bg-red-500 hover:bg-red-600 text-white px-2 sm:px-3 py-1.5 sm:py-1 rounded-lg text-xs font-medium transition-colors duration-200 flex items-center justify-center gap-1"
+                          title="Withdraw STRK"
+                        >
+                          <svg
+                            className="w-3 h-3 flex-shrink-0"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M12 6v6m0 0v6m0-6H6m6 0h6"
+                            />
+                          </svg>
+                          <span className="hidden sm:inline">Withdraw</span>
+                          <span className="sm:hidden">-</span>
+                        </button>
+                      )}
                     </div>
-                    <button
-                      onClick={handleDepositClick}
-                      className="ml-2 w-6 h-6 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center transition-colors duration-200"
-                      title="Add STRK"
-                    >
-                      <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                      </svg>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -190,8 +255,18 @@ export default function Home() {
           ) : error ? (
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
-                <svg className="w-24 h-24 mx-auto mb-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                <svg
+                  className="w-24 h-24 mx-auto mb-4 text-red-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 16.5c-.77.833.192 2.5 1.732 2.5z"
+                  />
                 </svg>
                 <p className="text-red-400 mb-4">{error}</p>
                 <button
@@ -205,11 +280,23 @@ export default function Home() {
           ) : filteredTokens.length === 0 ? (
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
-                <svg className="w-24 h-24 mx-auto mb-4 text-[#a1a1aa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11" />
+                <svg
+                  className="w-24 h-24 mx-auto mb-4 text-[#a1a1aa]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"
+                  />
                 </svg>
                 <p className="text-[#a1a1aa] mb-4">
-                  {searchQuery ? 'No tokens match your search' : 'No tokens found'}
+                  {searchQuery
+                    ? "No tokens match your search"
+                    : "No tokens found"}
                 </p>
                 {!searchQuery && (
                   <button
@@ -269,7 +356,18 @@ export default function Home() {
         <DepositModal
           isOpen={isDepositModalOpen}
           onClose={() => setIsDepositModalOpen(false)}
-          walletAddress={isWalletConnected ? walletAddress || undefined : user?.wallet_address || undefined}
+          walletAddress={
+            isWalletConnected
+              ? walletAddress || undefined
+              : user?.wallet_address || undefined
+          }
+        />
+
+        {/* Withdraw Modal */}
+        <WithdrawModal
+          isOpen={isWithdrawModalOpen}
+          onClose={() => setIsWithdrawModalOpen(false)}
+          currentBalance={starkBalance}
         />
       </div>
     </div>
