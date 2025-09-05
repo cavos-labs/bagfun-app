@@ -30,7 +30,7 @@ export default function ProfilePage() {
     }
     
     // Only fetch Cavos profile if no wallet connected and user has access token
-    if (user && user.access_token && !fetchedRef.current) {
+    if (user && user.auth_method !== "wallet") {
       fetchProfile();
     } else {
       // If not authenticated, stop loading
@@ -57,7 +57,6 @@ export default function ProfilePage() {
         
         // Update user access token if provided, but don't trigger re-fetch
         if (result.accessToken && user && result.accessToken !== user.access_token) {
-          console.log('Updating user access token from profile endpoint');
           setUser({
             ...user,
             access_token: result.accessToken

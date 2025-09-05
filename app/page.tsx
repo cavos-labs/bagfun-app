@@ -16,6 +16,7 @@ import { userAtom } from "@/lib/auth-atoms";
 import { useAtom } from "jotai";
 import { useWalletConnector } from "@/lib/useWalletConnector";
 import { getERC20Balance } from "@/lib/utils";
+import { useBulkImagePreloader } from "@/lib/useImagePreloader";
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,6 +28,13 @@ export default function Home() {
   const [tokens, setTokens] = useState<ApiToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Preload token images for better performance
+  const tokenImageUrls = tokens
+    .filter(token => token.image_url)
+    .map(token => token.image_url!);
+  
+  const { progress: imagePreloadProgress } = useBulkImagePreloader(tokenImageUrls);
   const [user] = useAtom(userAtom);
   const {
     isConnected: isWalletConnected,
@@ -62,7 +70,6 @@ export default function Home() {
   };
 
   const handleTokenCreated = (token: any) => {
-    console.log("Token created:", token);
     // Add the new token to the list
     setTokens((prevTokens) => [token, ...prevTokens]);
 
@@ -104,17 +111,8 @@ export default function Home() {
   // Fetch balance when authentication or wallet connection changes
   useEffect(() => {
     const fetchBalance = async () => {
-      console.log(
-        "Fetching balance - isWalletConnected:",
-        isWalletConnected,
-        "walletAddress:",
-        walletAddress,
-        "user:",
-        user
-      );
 
       if (isWalletConnected && walletAddress) {
-        console.log("Fetching balance for direct wallet user:", walletAddress);
         // Fetch balance for direct wallet users
         try {
           const currentBalance = await getERC20Balance(
@@ -122,14 +120,11 @@ export default function Home() {
             "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
             18
           );
-          console.log("Wallet balance result:", currentBalance);
           setStarkBalance(currentBalance);
         } catch (error) {
-          console.error("Error fetching wallet balance:", error);
           setStarkBalance(0);
         }
-      } else if (user && user.access_token) {
-        console.log("Fetching balance for Cavos user:", user.wallet_address);
+      } else if (user && user.auth_method !== "wallet") {
         // Fetch balance for Cavos authenticated users
         try {
           const currentBalance = await getBalanceOf(
@@ -138,14 +133,11 @@ export default function Home() {
             "18",
             process.env.NEXT_PUBLIC_CAVOS_APP_ID || ""
           );
-          console.log("Cavos balance result:", currentBalance);
           setStarkBalance(currentBalance.balance);
         } catch (error) {
-          console.error("Error fetching Cavos user balance:", error);
           setStarkBalance(0);
         }
       } else {
-        console.log("No wallet or user, clearing balance");
         // Clear balance if no user and no wallet
         setStarkBalance(0);
       }

@@ -73,7 +73,6 @@ export const useWalletConnector = () => {
   useEffect(() => {
     const autoReconnect = async () => {
       if (isHydrated && walletState.isConnected && walletState.address && !walletState.account) {
-        console.log('Auto-reconnecting to wallet:', walletState.walletName, walletState.address);
         try {
           const nodeUrl = process.env.NEXT_PUBLIC_RPC;
           const myFrontendProviderUrl = new RpcProvider({ nodeUrl });
@@ -95,11 +94,9 @@ export const useWalletConnector = () => {
               connectWallet({
                 account: myWalletAccount,
               });
-              console.log('Auto-reconnection successful');
             }
           }
         } catch (error) {
-          console.warn('Auto-reconnection failed:', error);
           // If reconnection fails, clear the stored state
           disconnectWallet();
         }
@@ -111,15 +108,6 @@ export const useWalletConnector = () => {
     }
   }, [isHydrated, walletState.isConnected, walletState.address, walletState.account]); // Run when hydration completes
 
-  // Log wallet state changes for debugging
-  useEffect(() => {
-    console.log('Wallet state changed:', {
-      isConnected: walletState.isConnected,
-      address: walletState.address,
-      walletName: walletState.walletName,
-      hasAccount: !!walletState.account
-    });
-  }, [walletState]);
 
   return {
     walletState,

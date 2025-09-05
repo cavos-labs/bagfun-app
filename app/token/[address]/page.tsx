@@ -20,6 +20,7 @@ import { connect } from '@starknet-io/get-starknet';
 import { AVNU } from '@/app/abis/AVNU';
 import { ERC20_ABI } from '@/app/abis/ERC20';
 import { executeSwap, fetchQuotes, Quote } from '@avnu/avnu-sdk';
+import OptimizedImage from '@/components/OptimizedImage';
 
 interface Token {
   id: string;
@@ -86,7 +87,6 @@ export default function TokenPage() {
       });
 
       if (result.error) {
-        console.error('Error fetching chart data:', result.error);
       } else {
         setChartData(result.data);
 
@@ -98,7 +98,6 @@ export default function TokenPage() {
         setCurrentPrice(latestPrice);
       }
     } catch (error) {
-      console.error('Error fetching chart data:', error);
     } finally {
       setChartLoading(false);
     }
@@ -107,17 +106,13 @@ export default function TokenPage() {
   // Fetch balances when authentication or wallet connection changes
   useEffect(() => {
     const fetchBalances = async () => {
-      console.log('Fetching balances - isWalletConnected:', isWalletConnected, 'walletAddress:', walletAddress, 'user:', user);
 
       if (isWalletConnected && walletAddress) {
-        console.log('Fetching balance for Starknet wallet user:', walletAddress);
         // Fetch balances for direct wallet users using getERC20Balance
         try {
           const strkBalance = await getERC20Balance(walletAddress, STRK_TOKEN_ADDRESS, 18);
-          console.log('Wallet STRK balance result:', strkBalance);
           setStarkBalance(strkBalance);
         } catch (error) {
-          console.error('Error fetching wallet STRK balance:', error);
           setStarkBalance(0);
         }
 
@@ -125,28 +120,22 @@ export default function TokenPage() {
         if (token?.contract_address) {
           try {
             const tokenBalance = await getERC20Balance(walletAddress, token.contract_address, 18);
-            console.log('Wallet token balance result:', tokenBalance);
             setTokenBalance(tokenBalance);
           } catch (error) {
-            console.error('Error fetching wallet token balance:', error);
             setTokenBalance(0);
           }
         }
       }
-      else if (user && user.access_token && user.wallet_address) {
-        console.log('Fetching balance for Cavos user:', user.wallet_address);
+      else if (user && user.auth_method !== "wallet") {
         // Fetch balances for Cavos authenticated users using getBalanceOf
         try {
           const strkResult = await getBalanceOf(user.wallet_address, STRK_TOKEN_ADDRESS, "18", process.env.NEXT_PUBLIC_CAVOS_APP_ID || '');
-          console.log('Cavos STRK balance result:', strkResult);
           if (strkResult.error) {
-            console.error('Error fetching Cavos STRK balance:', strkResult.error);
             setStarkBalance(0);
           } else {
             setStarkBalance(strkResult.balance);
           }
         } catch (error) {
-          console.error('Error fetching Cavos STRK balance:', error);
           setStarkBalance(0);
         }
 
@@ -154,20 +143,16 @@ export default function TokenPage() {
         if (token?.contract_address) {
           try {
             const result = await getBalanceOf(user.wallet_address, token.contract_address, "18", process.env.NEXT_PUBLIC_CAVOS_APP_ID || '');
-            console.log('Cavos token balance result:', result);
             if (result.error) {
-              console.error('Error fetching Cavos token balance:', result.error);
               setTokenBalance(0);
             } else {
               setTokenBalance(result.balance);
             }
           } catch (error) {
-            console.error('Error fetching Cavos token balance:', error);
             setTokenBalance(0);
           }
         }
       } else {
-        console.log('No wallet or user, clearing balances');
         // Clear balances if no user and no wallet
         setStarkBalance(0);
         setTokenBalance(0);
@@ -211,7 +196,6 @@ export default function TokenPage() {
         sellAmount: currentAmount,
       });
 
-      console.log('Quote result:', result);
 
       if (result.error) {
         setQuoteError(result.error);
@@ -224,7 +208,6 @@ export default function TokenPage() {
         setQuote(null);
       }
     } catch (error) {
-      console.error('Error fetching quote:', error);
       setQuoteError('Failed to fetch quote');
       setQuote(null);
     } finally {
@@ -261,7 +244,6 @@ export default function TokenPage() {
       setAllTokens(tokensArray);
     } catch (err) {
       setError('Failed to load token details');
-      console.error('Error fetching token:', err);
     } finally {
       setLoading(false);
     }
@@ -297,11 +279,9 @@ export default function TokenPage() {
     // Determine which swap method to use - prioritize wallet connection
     if (isWalletConnected && walletAddress) {
       // Use direct wallet connection for wallet users
-      console.log('Using wallet swap for connected Starknet wallet');
       await handleWalletSwap();
     } else if (user?.access_token) {
       // Use Cavos API for authenticated users (only when no wallet connected)
-      console.log('Using Cavos swap for authenticated user');
       await handleCavosSwap();
     } else {
       setSwapError('Please connect a wallet or login to trade');
@@ -343,7 +323,6 @@ export default function TokenPage() {
         return;
       }
 
-      console.log('Executing Cavos swap with params:', swapParams);
 
       const swapResult = await SwapService.executeSwap(swapParams, user.access_token);
 
@@ -355,7 +334,6 @@ export default function TokenPage() {
 
         // Update access token if provided
         if (swapResult.accessToken && user) {
-          console.log('Updating user access token with new token from swap');
           setUser({
             ...user,
             access_token: swapResult.accessToken
@@ -376,7 +354,6 @@ export default function TokenPage() {
             setStarkBalance(strkResult.balance);
           }
         } catch (error) {
-          console.error('Error refreshing STRK balance:', error);
         }
 
         // Refresh token balance
@@ -387,12 +364,10 @@ export default function TokenPage() {
               setTokenBalance(result.balance);
             }
           } catch (error) {
-            console.error('Error refreshing token balance:', error);
           }
         }
       }
     } catch (error) {
-      console.error('Swap execution error:', error);
       setSwapError('Failed to execute swap. Please try again.');
     } finally {
       setSwapping(false);
@@ -401,17 +376,10 @@ export default function TokenPage() {
 
   // Helper function to execute swap with a specific wallet account using AVNU SDK
   const executeSwapWithAccount = async (account: any, swapData: any, quote: AVNUQuote, currentAmount: string, walletAddr: string) => {
-    console.log('Executing AVNU SDK swap with account:', account.address);
-    console.log('Account object:', account);
-    console.log('Account type:', typeof account);
-    console.log('Account constructor:', account.constructor.name);
-    console.log('Account properties:', Object.keys(account));
-    console.log('Swap data:', swapData);
     
     // Convert amount to wei (BigInt)
     const sellAmountWei = BigInt(Math.floor(parseFloat(currentAmount) * Math.pow(10, 18)));
     
-    console.log('Sell amount in wei:', sellAmountWei.toString());
     
     // Create fresh quote parameters for AVNU SDK
     const params = {
@@ -422,7 +390,6 @@ export default function TokenPage() {
       size: 1
     };
     
-    console.log('Fetching fresh AVNU quotes with params:', params);
     
     // Use AVNU SDK options for sepolia testnet
     const AVNU_OPTIONS = { baseUrl: 'https://starknet.api.avnu.fi' };
@@ -445,7 +412,6 @@ export default function TokenPage() {
         throw new Error('No quotes available for this swap');
       }
       
-      console.log('Fresh AVNU quotes:', freshQuotes);
       
       // Execute the swap using AVNU SDK
       const result = await executeSwap(
@@ -457,12 +423,10 @@ export default function TokenPage() {
         AVNU_OPTIONS
       );
       
-      console.log('AVNU SDK swap result:', result);
       
       return result.transactionHash;
       
     } catch (error) {
-      console.error('AVNU SDK swap error:', error);
       throw error;
     }
   };
@@ -485,13 +449,6 @@ export default function TokenPage() {
     setSwapTxHash(null);
 
     try {
-      console.log('=== WALLET SWAP SIMULATION ===');
-      console.log('Trading Mode:', tradingMode);
-      console.log('Amount:', currentAmount);
-      console.log('Wallet Address:', walletAddress);
-      console.log('Token Address:', token.contract_address);
-      console.log('STRK Address:', STRK_TOKEN_ADDRESS);
-      console.log('Quote:', quote);
 
       // Simulate wallet swap with AVNU
       const swapData = {
@@ -503,21 +460,14 @@ export default function TokenPage() {
         slippageBps: 50, // 0.5% slippage
       };
 
-      console.log('Swap Data for Wallet Transaction:', swapData);
 
       // REAL IMPLEMENTATION - Starknet wallet contract calls
-      console.log('=== STARTING WALLET SWAP IMPLEMENTATION ===');
-      console.log('Wallet account available:', !!walletAccount);
-      console.log('Wallet connected:', isWalletConnected);
-      console.log('Wallet address:', walletAddress);
 
       if (!walletAccount) {
-        console.error('Wallet account not available. Attempting to reconnect...');
         
         // Try to reconnect if the account is missing but wallet is connected
         if (isWalletConnected && walletAddress) {
           try {
-            console.log('Attempting manual reconnection...');
             const nodeUrl = process.env.NEXT_PUBLIC_RPC;
             const provider = new RpcProvider({ nodeUrl });
             
@@ -526,7 +476,6 @@ export default function TokenPage() {
             
             if (selectedWallet) {
               const account = await WalletAccount.connect(provider, selectedWallet);
-              console.log('Manual reconnection successful:', account.address);
               
               // Use the reconnected account for this transaction
               // Note: This doesn't update the global state, just for this swap
@@ -543,7 +492,6 @@ export default function TokenPage() {
               throw new Error('Unable to reconnect to wallet');
             }
           } catch (reconnectError) {
-            console.error('Manual reconnection failed:', reconnectError);
             throw new Error(`Wallet account not available. Reconnection failed: ${reconnectError}`);
           }
         } else {
@@ -563,30 +511,24 @@ export default function TokenPage() {
       setSellAmount('');
       
       // Refresh balances for wallet users
-      console.log('Refreshing wallet balances for:', walletAddress);
       
       // Refresh STRK balance
       try {
         const strkBalance = await getERC20Balance(walletAddress, STRK_TOKEN_ADDRESS, 18);
-        console.log('Refreshed wallet STRK balance:', strkBalance);
         setStarkBalance(strkBalance);
       } catch (error) {
-        console.error('Error refreshing wallet STRK balance:', error);
       }
       
       // Refresh token balance
       if (token?.contract_address) {
         try {
           const tokenBalance = await getERC20Balance(walletAddress, token.contract_address, 18);
-          console.log('Refreshed wallet token balance:', tokenBalance);
           setTokenBalance(tokenBalance);
         } catch (error) {
-          console.error('Error refreshing wallet token balance:', error);
         }
       }
 
     } catch (error) {
-      console.error('Wallet swap error:', error);
       setSwapError(`Wallet swap failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setSwapping(false);
@@ -697,12 +639,20 @@ export default function TokenPage() {
                   <div className="flex items-center space-x-4 mb-4">
                     <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
                       {token.image_url ? (
-                        <Image
+                        <OptimizedImage
                           src={token.image_url}
                           alt={token.name}
                           width={64}
                           height={64}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover rounded-full"
+                          priority={true}
+                          fallbackComponent={
+                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 rounded-full">
+                              <span className="text-white font-bold text-2xl">
+                                {token.ticker?.charAt(0) || token.name?.charAt(0) || 'T'}
+                              </span>
+                            </div>
+                          }
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">

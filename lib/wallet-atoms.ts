@@ -58,7 +58,6 @@ export const connectWalletAtom = atom(
         };
         localStorage.setItem('walletState', JSON.stringify(stateToSave));
       } catch (error) {
-        console.error('Error saving wallet state:', error);
       }
     }
   }
@@ -74,7 +73,6 @@ export const disconnectWalletAtom = atom(
       try {
         localStorage.removeItem('walletState');
       } catch (error) {
-        console.error('Error clearing wallet state:', error);
       }
     }
   }
@@ -101,7 +99,6 @@ export const hydrateWalletStateAtom = atom(
         }
         set(isHydratedAtom, true);
       } catch (error) {
-        console.error('Error hydrating wallet state:', error);
         set(isHydratedAtom, true); // Mark as hydrated even if it failed
       }
     }

@@ -9,6 +9,7 @@ import Image from "next/image";
 import { CavosAuth, formatAmount, getBalanceOf } from "cavos-service-sdk";
 import { Contract, CallData, cairo, RpcProvider } from "starknet";
 import { MEMECOIN_FACTORY_ABI } from "@/app/abis/MemecoinFactory";
+import { getERC20Balance } from "@/lib/utils";
 import axios from "axios";
 
 interface CreateTokenModalProps {
@@ -45,7 +46,18 @@ export default function CreateTokenModal({
   const fetchStarkBalance = async () => {
     const walletAddr = isWalletConnected ? walletAddress : user?.wallet_address;
 
-    if (walletAddr) {
+    if (isWalletConnected && walletAddress) {
+      try {
+        const currentBalance = await getERC20Balance(
+          walletAddress,
+          "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
+          18
+        );
+        setStarkBalance(currentBalance);
+      } catch (error) {
+        setStarkBalance(0);
+      }
+    } else if (walletAddr) {
       setBalanceLoading(true);
       try {
         const result = await getBalanceOf(
