@@ -15,7 +15,7 @@ export async function getERC20Balance(walletAddress: string, contractAddress: st
         if (typeof balanceResult === 'object' && balanceResult !== null) {
             // Handle u256 struct with low and high parts
             const balanceBigInt = BigInt(balanceResult.low || balanceResult[0] || 0) + 
-                                 (BigInt(balanceResult.high || balanceResult[1] || 0) << 128n);
+                                 (BigInt(balanceResult.high || balanceResult[1] || 0) << BigInt(128));
             balanceInUnits = Number(balanceBigInt) / (10 ** decimals);
         } else {
             // Handle simple bigint or number
