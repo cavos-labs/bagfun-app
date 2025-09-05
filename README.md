@@ -1,199 +1,413 @@
-# bag.fun App
+<div align="center">
+  <img src="public/bag-fun.png" alt="BagFun Logo" width="200" height="auto">
+</div>
 
-This is the frontend web application for bag.fun, built with [Next.js](https://nextjs.org). This application serves as the main user interface for the bag.fun platform, providing an interactive experience for discovering, trading, and managing meme coins.
+# BagFun App - Memecoin Trading Frontend
 
-## Project Overview
+BagFun App is the primary frontend application for the BagFun memecoin trading platform on Starknet. It provides a comprehensive user interface for token trading, wallet management, portfolio tracking, and memecoin creation.
 
-The bag.fun app is designed as a cryptocurrency trading platform with a focus on meme coins. The interface features:
-- **Coin Discovery**: Browse and discover trending meme coins
-- **Trading Interface**: Buy and sell coins with real-time market data
-- **Portfolio Management**: Track holdings and performance
-- **User Authentication**: Secure sign-in and profile management
-- **Responsive Design**: Optimized for both desktop and mobile experiences
+## 🏗️ Application Architecture
 
-## Project Structure
+### Technology Stack
+- **Next.js 15** with App Router and Turbopack
+- **React 19** with Server Components
+- **TypeScript 5** for type safety
+- **Tailwind CSS 4** for styling
+- **Jotai 2.13** for state management
 
-### Design System
+### Blockchain Integration
+- **Starknet.js 7.6.4** - Core blockchain interaction
+- **@starknet-io/get-starknet 4.0.7** - Wallet connection
+- **@avnu/avnu-sdk 3.1.1** - DEX aggregator for swaps
+- **Cavos Service SDK 1.2.35** - Authentication & managed transactions
 
-#### Typography
-- **Title/Heading Font**: Rama Gothic Bold (custom font, consistent with bag.fun branding)
-- **Body/Content Font**: Inter (system font)
+### Additional Libraries
+- **Axios 1.11** - HTTP client
+- **@uniswap/sdk-core 7.7** - Trading calculations
 
-#### Color Scheme
-- **Primary Background**: Dark theme (`#141414`)
-- **Card Backgrounds**: Dark gray (`#1a1a1a`)
-- **Text Colors**: 
-  - Primary: White (`#ffffff`)
-  - Secondary: Gray (`#a1a1aa`)
-- **Accent Colors**:
-  - Success/Up: Green (`#10b981`)
-  - Warning/Down: Red (`#ef4444`)
-  - Primary Action: Blue accent
+## 🚀 Quick Start
 
-#### Components
-- **Coin Cards**: Display coin information with image, name, ticker, address, and market cap
-- **Navigation**: Left sidebar with Home, Profile sections
-- **Search**: Global search functionality with keyboard shortcut (⌘ + K)
-- **Authentication**: Sign in/out functionality
+### Prerequisites
+- Node.js 18+ and npm
+- Starknet wallet (Argent X, Braavos, etc.)
+- Access to Starknet RPC endpoint
+- Cavos account (optional)
 
-### Tech Stack
-- **Framework**: Next.js 15.5.2 with App Router
-- **Runtime**: React 19.1.0
-- **Styling**: Tailwind CSS 4
-- **Language**: TypeScript
-- **Build Tool**: Turbopack (enabled for faster builds)
-- **State Management**: React Context/Hooks (or specify if using Redux, Zustand, etc.)
+### Installation & Setup
 
-## Environment Setup
-
-### API Configuration
-
-This app consumes APIs from the bag.fun backend service. You'll need to configure the API endpoints:
-
-1. Copy the environment template:
-   ```bash
-   cp .env.example .env.local
-   ```
-
-2. Update `.env.local` with your API configuration:
-   ```env
-   NEXT_PUBLIC_API_URL=your_backend_api_url
-   NEXT_PUBLIC_WS_URL=your_websocket_url
-   ```
-
-### Required Assets
-
-Ensure the following assets are available in the `public/` directory:
-- `bag-fun.png` - Main BagFun logo/branding
-- `create-coin.png` - Create coin button image
-- `fonts/ramagothicbold.ttf` - Custom Rama Gothic Bold font
-
-## Getting Started
-
-### Development Server
-
-First, install dependencies:
-
+1. **Install dependencies**
 ```bash
 npm install
-# or
-yarn install
-# or
-pnpm install
 ```
 
-Then, run the development server:
+2. **Environment Configuration**
 
+Copy `.env.example` to `.env.local` and configure:
+
+```env
+# Cavos Configuration (Required for enhanced features)
+CAVOS_ORG_SECRET=your-cavos-org-secret
+CAVOS_APP_ID=your-cavos-app-id
+NEXT_PUBLIC_CAVOS_APP_ID=your-cavos-app-id
+
+# Starknet Configuration
+NEXT_PUBLIC_STARKNET_NETWORK=mainnet  # or sepolia
+NEXT_PUBLIC_RPC=your-starknet-rpc-endpoint
+
+# Backend API Configuration  
+BAGFUN_WEB_API_URL=http://localhost:3000
+BAGFUN_WEB_API_KEY=your-api-key
+```
+
+3. **Development Server**
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-### Build for Production
-
-To create an optimized production build:
-
+4. **Production Build**
 ```bash
 npm run build
-# or
-yarn build
-# or
-pnpm build
+npm start
 ```
 
-### Start Production Server
+## 📁 Project Structure
 
-To start the production server:
+```
+bagfun-app/
+├── app/                           # Next.js App Router
+│   ├── api/                       # API Routes
+│   │   ├── v1/auth/              # Authentication endpoints
+│   │   │   ├── signUp/route.ts   # User registration
+│   │   │   └── signIn/route.ts   # User login
+│   │   ├── tokens/               # Token management
+│   │   │   ├── route.ts          # List tokens
+│   │   │   ├── create/route.ts   # Create token
+│   │   │   └── [id]/route.ts     # Get token details
+│   │   ├── quotes/route.ts       # Trading quotes
+│   │   ├── profile/route.ts      # User profile
+│   │   └── voyager/[txHash]/route.ts # Transaction details
+│   ├── token/[address]/          # Dynamic token pages
+│   │   └── page.tsx              # Token detail & trading
+│   ├── profile/                  # User profile
+│   │   └── page.tsx              # Profile management
+│   ├── auth/callback/            # OAuth callback
+│   │   └── page.tsx              # Auth callback handler
+│   ├── abis/                     # Smart contract ABIs
+│   │   ├── ERC20.ts              # ERC-20 interface
+│   │   ├── AVNU.ts               # DEX router
+│   │   ├── MemecoinFactory.ts    # Token factory
+│   │   └── STRK.ts               # STRK token
+│   ├── layout.tsx                # Root layout
+│   ├── page.tsx                  # Home page
+│   └── globals.css               # Global styles
+├── components/                   # Reusable UI components
+│   ├── AccessProvider.tsx        # Authentication guard
+│   ├── CreateTokenModal.tsx      # Token creation modal
+│   ├── DepositModal.tsx          # Deposit funds modal
+│   ├── InvitationGate.tsx        # Beta access gate
+│   ├── LineChart.tsx             # Price chart component
+│   ├── LoginModal.tsx            # Authentication modal
+│   ├── SearchBar.tsx             # Token search
+│   ├── Sidebar.tsx               # Navigation sidebar
+│   ├── TokenBalancesModal.tsx    # Portfolio modal
+│   ├── TokenCard.tsx             # Token display card
+│   └── WithdrawModal.tsx         # Withdraw funds modal
+├── lib/                          # Core services & utilities
+│   ├── auth-atoms.ts             # Authentication state
+│   ├── wallet-atoms.ts           # Wallet connection state
+│   ├── useWalletConnector.ts     # Wallet connection hook
+│   ├── auth.ts                   # Auth service
+│   ├── tokenService.ts           # Token API service
+│   ├── swapService.ts            # Trading service
+│   ├── quotesService.ts          # Price quotes service
+│   ├── profileService.ts         # User profile service
+│   ├── chartService.ts           # Chart data service
+│   ├── utils.ts                  # Helper utilities
+│   └── mockData.ts               # Development data
+├── types/                        # TypeScript definitions
+│   └── starknet.d.ts             # Starknet types
+├── public/                       # Static assets
+│   ├── fonts/                    # Custom fonts
+│   └── images/                   # UI images
+└── package.json                  # Dependencies & scripts
+```
+
+## 🎯 Core Features
+
+### 🔐 Authentication System
+**Dual Authentication Support:**
+- **Cavos Authentication**: Email/password with managed wallets
+- **Direct Wallet Connection**: Connect existing Starknet wallets
+
+### 💱 Trading Engine
+**DEX Integration:**
+- AVNU aggregator for optimal swap routes
+- Real-time price quotes and market data
+- Support for both wallet types (managed/direct)
+
+**Trading Flow:**
+1. Connect wallet or authenticate with Cavos
+2. Select trading pair from available tokens
+3. Get real-time quotes with slippage calculation
+4. Execute swap through appropriate method
+5. Confirm transaction and update balances
+
+**Key Components:**
+- `token/[address]/page.tsx` - Trading interface
+- `swapService.ts` - Swap execution logic
+- `quotesService.ts` - Price quote management
+
+### 🎨 Token Management
+**Token Creation:**
+- Deploy new ERC-20 tokens to Starknet
+- Upload token images to IPFS
+- Set token metadata (name, symbol, description)
+- Configure initial supply and distribution
+
+**Token Discovery:**
+- Browse all available tokens
+- Search by name or symbol
+- View token details and trading data
+- Track price history with charts
+
+**Key Components:**
+- `CreateTokenModal.tsx` - Token creation interface
+- `TokenCard.tsx` - Token display component
+- `tokenService.ts` - Token API interactions
+
+### 📊 Portfolio Management
+**Balance Tracking:**
+- Real-time balance updates for all tokens
+- Portfolio value calculation
+- Transaction history
+- Performance analytics
+
+**Key Components:**
+- `TokenBalancesModal.tsx` - Portfolio overview
+- `profile/page.tsx` - User profile & settings
+- Balance hooks in service files
+
+## 🔧 State Management
+
+
+**Bagfun Web API:**
+- Token metadata and storage
+- User profile management
+- IPFS asset management
+
+## 🎨 Design System
+
+### Typography
+- **Heading Font**: Rama Gothic Bold (custom font)
+- **Body Font**: System fonts (Inter fallback)
+
+### Color Palette
+- **Primary Background**: `#141414` (Dark theme)
+- **Card Backgrounds**: `#1a1a1a` (Dark gray)
+- **Text Colors**:
+  - Primary: `#ffffff` (White)
+  - Secondary: `#a1a1aa` (Gray)
+- **Accent Colors**:
+  - Success: `#10b981` (Green)
+  - Warning: `#ef4444` (Red)
+  - Primary: Blue gradient
+
+### Component Patterns
+
+**Modal System:**
+- Consistent modal wrapper with backdrop
+- Smooth animations and transitions
+- Mobile-responsive design
+- Focus management and accessibility
+
+**Card Layouts:**
+- Token display cards with hover effects
+- Portfolio balance cards
+- Trading interface cards
+
+## 🔒 Security Implementation
+
+### Wallet Security
+- **No Private Key Storage**: All private keys remain in user wallets
+- **External Signing**: Transactions signed through wallet interfaces  
+- **Session Management**: Secure token-based authentication
+- **Auto-logout**: Automatic session cleanup
+
+### API Security
+- **Environment Variables**: Sensitive keys in server environment
+- **Input Validation**: All user inputs validated and sanitized
+- **CORS Configuration**: Proper origin restrictions
+- **Error Handling**: No sensitive data in error responses
+
+### Smart Contract Security
+- **ABI Validation**: Contract interactions through validated ABIs
+- **Transaction Limits**: Built-in slippage and amount limits
+- **Network Verification**: Chain ID validation for all transactions
+
+## 🔄 Data Flow Patterns
+
+### Trading Flow
+```
+User Action → State Update → API Call → Blockchain Interaction → State Update → UI Update
+```
+
+1. User initiates trade action
+2. Update loading state in UI
+3. Fetch quote from AVNU API
+4. Display quote to user for confirmation
+5. Execute transaction through wallet/Cavos
+6. Monitor transaction status
+7. Update balances and UI state
+
+### Authentication Flow
+```
+Login Attempt → Validation → API Call → State Update → Route Protection → UI Update
+```
+
+1. User submits credentials
+2. Client-side validation
+3. API authentication request
+4. Update authentication atoms
+5. Enable protected routes
+6. Redirect to requested page
+
+### Balance Updates
+```
+Connection → Initial Fetch → Periodic Updates → Transaction Events → Real-time Sync
+```
+
+1. Wallet connection established
+2. Fetch all token balances
+3. Set up periodic refresh intervals
+4. Listen for transaction confirmations
+5. Update balances immediately after transactions
+
+## 🛠️ Development Guidelines
+
+### Code Standards
+- **TypeScript Strict Mode**: All code fully typed
+- **Component Structure**: Functional components with hooks
+- **Error Boundaries**: Comprehensive error handling
+- **Performance**: Optimized re-renders with proper dependencies
+
+### Build Optimization
+- **Turbopack**: Fast development builds
+- **Code Splitting**: Automatic route-based splitting
+- **Asset Optimization**: Image and font optimization
+- **Bundle Analysis**: Regular bundle size monitoring
+
+## 🌍 Environment Configuration
+
+### Network Support
+- **Starknet Mainnet**: Production environment
+- **Local Development**: Integration with local bagfun-web
+
+### RPC Configuration
+Configure Starknet RPC endpoints for optimal performance:
+```env
+# Alchemy (Recommended)
+NEXT_PUBLIC_RPC=https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_8/YOUR_KEY
+
+# Infura
+NEXT_PUBLIC_RPC=https://starknet-mainnet.infura.io/v3/YOUR_KEY
+
+# Public RPC (Rate Limited)
+NEXT_PUBLIC_RPC=https://starknet-mainnet.public.blastapi.io/rpc/v0_8
+```
+
+## 📱 Mobile Responsiveness
+
+### Responsive Design
+- **Mobile-First**: Design starts with mobile experience
+- **Progressive Enhancement**: Desktop features added progressively
+- **Touch Interactions**: Optimized for touch interfaces
+- **Performance**: Optimized for mobile networks
+
+### Key Breakpoints
+- **sm**: 640px - Mobile landscape
+- **md**: 768px - Tablet portrait
+- **lg**: 1024px - Desktop
+- **xl**: 1280px - Large desktop
+
+## 🔧 Development Scripts
 
 ```bash
-npm run start
-# or
-yarn start
-# or
-pnpm start
+# Development
+npm run dev          # Start development server with Turbopack
+
+# Production  
+npm run build        # Build production bundle with Turbopack
+npm start            # Start production server
+
+# Development Tools
+npm run type-check   # TypeScript type checking
+npm run lint         # ESLint code linting
+npm run format       # Prettier code formatting
 ```
 
-## Features
+## 🚨 Troubleshooting
 
-### Core Functionality
-- **Real-time Coin Data**: Live market cap updates and price movements
-- **Coin Discovery**: Browse trending and popular meme coins
-- **Search**: Find specific coins by name or ticker
-- **User Profiles**: Personalized user experience
-- **Responsive UI**: Works seamlessly on desktop and mobile
+### Common Issues
 
-### User Interface
-- **Dark Theme**: Consistent with bag.fun branding
-- **Card-based Layout**: Clean, modern interface for coin display
-- **Interactive Elements**: Hover states, loading states, and smooth animations
-- **Accessibility**: Keyboard navigation and screen reader support
+**Wallet Connection:**
+- Clear localStorage wallet state
+- Check wallet extension is unlocked
+- Verify network matches configuration
+- Restart wallet extension if needed
 
-## API Integration
+**Balance Loading:**
+- Check RPC endpoint is accessible
+- Verify contract addresses are correct
+- Check for network connectivity issues
+- Review token contract compatibility
 
-The app integrates with the bag.fun backend API for:
-- Coin data and market information
-- User authentication and profiles
-- Real-time price updates via WebSocket
-- Trading functionality
+**Trading Issues:**
+- Verify sufficient token balance
+- Check token allowances
+- Confirm slippage settings
+- Validate token contract addresses
 
-## Development Guidelines
+### Debug Mode
+Enable detailed logging:
+```env
+NODE_ENV=development
+NEXT_PUBLIC_DEBUG=true
+```
+
+## 📈 Performance Optimization
+
+### Core Web Vitals
+- **LCP**: Optimized with Next.js Image component
+- **FID**: Minimized JavaScript execution time
+- **CLS**: Stable layouts with proper sizing
+
+### Optimization Strategies
+- **Route-based Code Splitting**: Automatic with Next.js App Router
+- **Image Optimization**: Next.js Image component with WebP
+- **Font Optimization**: Self-hosted fonts with display: swap
+- **Bundle Analysis**: Regular monitoring with webpack-bundle-analyzer
+
+## 🤝 Contributing
+
+### Development Workflow
+1. Fork and clone the repository
+2. Install dependencies with `npm install`
+3. Create feature branch from `main`
+4. Make changes with appropriate tests
+5. Run linting and type checking
+6. Submit pull request with description
 
 ### Code Style
-- Follow TypeScript best practices
-- Use functional components with React Hooks
-- Implement proper error handling and loading states
-- Follow the existing component structure and naming conventions
-
-### Component Structure
-- Keep components small and focused
-- Use proper TypeScript interfaces for props
+- Follow existing TypeScript and React patterns
+- Use functional components with hooks
 - Implement proper error boundaries
-- Follow the established design system
+- Add JSDoc comments for complex functions
+- Follow Tailwind CSS utility patterns
 
-### Performance
-- Optimize images and assets
-- Implement proper caching strategies
-- Use React.memo for expensive components
-- Implement virtual scrolling for large lists
+## 📄 License
 
-## Deployment
+This project is proprietary software. All rights reserved.
 
-### Vercel (Recommended)
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-### Environment Variables
-Make sure to set the following environment variables in your deployment:
-- `NEXT_PUBLIC_API_URL`
-- `NEXT_PUBLIC_WS_URL`
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Learn More
-
-To learn more about the technologies used in this project:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API
-- [React Documentation](https://react.dev) - learn React concepts and patterns
-- [Tailwind CSS Documentation](https://tailwindcss.com/docs) - utility-first CSS framework
-- [TypeScript Documentation](https://www.typescriptlang.org/docs) - typed JavaScript
-
-## Contributing
-
-When contributing to this project:
-1. Follow the established code style and conventions
-2. Maintain consistency with the bag.fun design system
-3. Test your changes thoroughly
-4. Update documentation as needed
-
-## License
-
-This project is part of the bag.fun platform. Please refer to the main project license for usage terms.
+**BagFun App** - Memecoins Everywhere

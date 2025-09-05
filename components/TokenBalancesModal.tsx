@@ -43,19 +43,15 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
 
     // For Starknet wallet users
     if (isWalletConnected && walletAddress) {
-      console.log('Fetching balance for Starknet wallet user:', walletAddress, token.contract_address);
       try {
         const balance = await getERC20Balance(walletAddress, token.contract_address, 18);
-        console.log('Wallet balance result:', balance);
         return balance;
       } catch (error) {
-        console.error('Error fetching wallet token balance:', error);
         throw error;
       }
     }
     // For Cavos authenticated users
     else if (user?.wallet_address && user?.access_token) {
-      console.log('Fetching balance for Cavos user:', user.wallet_address, token.contract_address);
       try {
         const result = await getBalanceOf(
           user.wallet_address,
@@ -63,10 +59,8 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
           "18", // Default to 18 decimals
           process.env.NEXT_PUBLIC_CAVOS_APP_ID || ''
         );
-        console.log('Cavos balance result:', result);
         return result.balance || 0;
       } catch (error) {
-        console.error('Error fetching Cavos token balance:', error);
         throw error;
       }
     } else {
@@ -77,18 +71,12 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
   const loadAllBalances = async () => {
     // Check if user has wallet connected OR is authenticated with Cavos
     if ((!isWalletConnected || !walletAddress) && (!user?.wallet_address || !user?.access_token)) {
-      console.log('No wallet or user authenticated, skipping balance loading');
       return;
     }
     
     if (tokens.length === 0) {
-      console.log('No tokens to load balances for');
       return;
     }
-
-    console.log('Loading balances for', tokens.length, 'tokens');
-    console.log('Wallet connected:', isWalletConnected, walletAddress);
-    console.log('User authenticated:', !!user?.access_token, user?.wallet_address);
 
     setLoading(true);
     

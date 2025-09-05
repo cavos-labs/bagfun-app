@@ -21,8 +21,6 @@ export default function ProfilePage() {
 
   useEffect(() => {
     // Wait for initialization to complete
-    console.log(user);
-    console.log(isWalletConnected);
     if (!isInitialized) return;
     
     // Prioritize wallet connection - if wallet is connected, skip Cavos profile fetch
@@ -59,7 +57,6 @@ export default function ProfilePage() {
         
         // Update user access token if provided, but don't trigger re-fetch
         if (result.accessToken && user && result.accessToken !== user.access_token) {
-          console.log('Updating user access token from profile endpoint');
           setUser({
             ...user,
             access_token: result.accessToken

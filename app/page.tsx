@@ -57,7 +57,6 @@ export default function Home() {
   };
 
   const handleTokenCreated = (token: any) => {
-    console.log("Token created:", token);
     // Add the new token to the list
     setTokens((prevTokens) => [token, ...prevTokens]);
   };
@@ -90,17 +89,8 @@ export default function Home() {
   // Fetch balance when authentication or wallet connection changes
   useEffect(() => {
     const fetchBalance = async () => {
-      console.log(
-        "Fetching balance - isWalletConnected:",
-        isWalletConnected,
-        "walletAddress:",
-        walletAddress,
-        "user:",
-        user
-      );
 
       if (isWalletConnected && walletAddress) {
-        console.log("Fetching balance for direct wallet user:", walletAddress);
         // Fetch balance for direct wallet users
         try {
           const currentBalance = await getERC20Balance(
@@ -108,14 +98,11 @@ export default function Home() {
             "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
             18
           );
-          console.log("Wallet balance result:", currentBalance);
           setStarkBalance(currentBalance);
         } catch (error) {
-          console.error("Error fetching wallet balance:", error);
           setStarkBalance(0);
         }
       } else if (user && user.auth_method !== "wallet") {
-        console.log("Fetching balance for Cavos user:", user.wallet_address);
         // Fetch balance for Cavos authenticated users
         try {
           const currentBalance = await getBalanceOf(
@@ -124,14 +111,11 @@ export default function Home() {
             "18",
             process.env.NEXT_PUBLIC_CAVOS_APP_ID || ""
           );
-          console.log("Cavos balance result:", currentBalance);
           setStarkBalance(currentBalance.balance);
         } catch (error) {
-          console.error("Error fetching Cavos user balance:", error);
           setStarkBalance(0);
         }
       } else {
-        console.log("No wallet or user, clearing balance");
         // Clear balance if no user and no wallet
         setStarkBalance(0);
       }
