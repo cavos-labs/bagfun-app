@@ -32,6 +32,7 @@ export default function OptimizedImage({
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [urlIndex, setUrlIndex] = useState(0);
+  const [showSkeleton, setShowSkeleton] = useState(true);
 
   // Use image preloader for IPFS optimization
   const { optimizedSrc, isPreloading, handleHover } = useImagePreloader(src, {
@@ -57,6 +58,8 @@ export default function OptimizedImage({
   const handleLoad = () => {
     setIsLoading(false);
     setHasError(false);
+    // Hide skeleton immediately when image loads
+    setShowSkeleton(false);
   };
 
   const handleError = () => {
@@ -83,13 +86,26 @@ export default function OptimizedImage({
     );
   }
 
+  // Create an animated gradient skeleton
+  const SkeletonComponent = ({ className: skeletonClass }: { className?: string }) => (
+    <div className={`animate-pulse bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 bg-[length:200%_100%] animate-shimmer ${skeletonClass}`}>
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
+          <span className="text-gray-400 font-bold text-sm">
+            {alt.charAt(0).toUpperCase()}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+
   const imageProps = {
     src: currentSrc,
     alt,
     onLoad: handleLoad,
     onError: handleError,
     className: `transition-opacity duration-300 ${
-      isLoading ? 'opacity-0' : 'opacity-100'
+      isLoading || showSkeleton ? 'opacity-0' : 'opacity-100'
     } ${className}`,
     priority,
     placeholder: 'blur' as const,
@@ -102,8 +118,8 @@ export default function OptimizedImage({
         className="relative w-full h-full"
         onMouseEnter={preloadOnHover ? handleHover : undefined}
       >
-        {(isLoading || isPreloading) && (
-          <div className="absolute inset-0 bg-gray-800 animate-pulse rounded-inherit" />
+        {(showSkeleton || isPreloading) && (
+          <SkeletonComponent className="absolute inset-0 rounded-inherit" />
         )}
         <Image
           {...imageProps}
@@ -118,11 +134,11 @@ export default function OptimizedImage({
     <div 
       className="relative"
       onMouseEnter={preloadOnHover ? handleHover : undefined}
+      style={{ width, height }}
     >
-      {(isLoading || isPreloading) && (
-        <div 
-          className="absolute inset-0 bg-gray-800 animate-pulse rounded-inherit"
-          style={{ width, height }}
+      {(showSkeleton || isPreloading) && (
+        <SkeletonComponent 
+          className="absolute inset-0 rounded-inherit"
         />
       )}
       <Image

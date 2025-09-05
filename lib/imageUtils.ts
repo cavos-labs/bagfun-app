@@ -5,12 +5,12 @@
  * These are public gateways optimized for performance
  */
 const IPFS_GATEWAYS = [
-  'https://ipfs.io/ipfs/',
-  'https://cloudflare-ipfs.com/ipfs/',
-  'https://gateway.pinata.cloud/ipfs/',
-  'https://ipfs.infura.io/ipfs/',
-  'https://dweb.link/ipfs/',
-  'https://w3s.link/ipfs/',
+  'https://cloudflare-ipfs.com/ipfs/', // Cloudflare - generally fastest
+  'https://ipfs.io/ipfs/', // Official IPFS gateway
+  'https://gateway.pinata.cloud/ipfs/', // Pinata - good for pinned content
+  'https://dweb.link/ipfs/', // Protocol Labs gateway
+  'https://w3s.link/ipfs/', // Web3 Storage
+  'https://ipfs.infura.io/ipfs/', // Infura
 ];
 
 /**
@@ -78,7 +78,7 @@ export function preloadImage(src: string): Promise<boolean> {
     const img = new Image();
     const timeout = setTimeout(() => {
       resolve(false);
-    }, 3000); // 3 second timeout
+    }, 1500); // Reduced timeout for faster fallback
     
     img.onload = () => {
       clearTimeout(timeout);

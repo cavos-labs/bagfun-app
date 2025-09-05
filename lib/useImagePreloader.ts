@@ -15,7 +15,7 @@ const loadingPromises = new Map<string, Promise<string>>();
 export function useImagePreloader(src: string, options: ImagePreloaderOptions = {}) {
   const { preloadOnHover = false, cacheInMemory = true } = options;
   const [optimizedSrc, setOptimizedSrc] = useState<string>(src);
-  const [isPreloading, setIsPreloading] = useState(false);
+  const [isPreloading, setIsPreloading] = useState(isIPFSUrl(src));
 
   const preloadImage = useCallback(async (imageSrc: string) => {
     // Check if already cached
@@ -54,17 +54,28 @@ export function useImagePreloader(src: string, options: ImagePreloaderOptions = 
     }
   }, [cacheInMemory]);
 
-  // Preload on mount for IPFS URLs
+  // Aggressive preloading - start immediately for IPFS URLs
   useEffect(() => {
-    if (!preloadOnHover && isIPFSUrl(src)) {
-      setIsPreloading(true);
-      preloadImage(src)
-        .then((optimized) => {
-          setOptimizedSrc(optimized);
-        })
-        .finally(() => {
-          setIsPreloading(false);
-        });
+    if (isIPFSUrl(src)) {
+      // Check if already cached first
+      if (imageCache.has(src)) {
+        setOptimizedSrc(imageCache.get(src)!);
+        setIsPreloading(false);
+        return;
+      }
+
+      if (!preloadOnHover) {
+        setIsPreloading(true);
+        preloadImage(src)
+          .then((optimized) => {
+            setOptimizedSrc(optimized);
+          })
+          .finally(() => {
+            setIsPreloading(false);
+          });
+      }
+    } else {
+      setIsPreloading(false);
     }
   }, [src, preloadOnHover, preloadImage]);
 
@@ -124,8 +135,8 @@ export function useBulkImagePreloader(sources: string[]) {
   }, [sources]);
 
   useEffect(() => {
-    // Debounce preloading to avoid excessive requests
-    const timer = setTimeout(preloadAll, 100);
+    // Start preloading immediately for better perceived performance
+    const timer = setTimeout(preloadAll, 10);
     return () => clearTimeout(timer);
   }, [preloadAll]);
 
