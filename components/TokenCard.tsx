@@ -105,9 +105,6 @@ export default function TokenCard({ token }: TokenCardProps) {
           </div>
         )}
         <div className="flex items-center justify-between">
-          <span className="text-white font-regular text-sm sm:text-base">
-            Supply: {formatAmount(token.amount)}
-          </span>
           <span className="text-[#a1a1aa] text-xs">
             {formatDate(token.created_at)}
           </span>
