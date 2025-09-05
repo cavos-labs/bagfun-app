@@ -1,5 +1,7 @@
 import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { ApiToken } from '@/lib/tokenService';
+import { MarketService, TokenMarketResponse } from '@/lib/marketService';
 import OptimizedImage from './OptimizedImage';
 
 interface TokenCardProps {
@@ -8,7 +10,23 @@ interface TokenCardProps {
 
 export default function TokenCard({ token }: TokenCardProps) {
   const router = useRouter();
+  const [marketData, setMarketData] = useState<TokenMarketResponse | null>(null);
+  const [isLoadingMarket, setIsLoadingMarket] = useState(false);
   
+  // Fetch market data when component mounts
+  useEffect(() => {
+    if (token.contract_address && !marketData && !isLoadingMarket) {
+      setIsLoadingMarket(true);
+      MarketService.getTokenMarketData(token.contract_address)
+        .then((data) => {
+          setMarketData(data);
+        })
+        .finally(() => {
+          setIsLoadingMarket(false);
+        });
+    }
+  }, [token.contract_address, marketData, isLoadingMarket]);
+
   const handleClick = () => {
     if (token.contract_address) {
       router.push(`/token/${token.contract_address}`);
@@ -100,7 +118,7 @@ export default function TokenCard({ token }: TokenCardProps) {
               onClick={(e) => e.stopPropagation()}
             >
               <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 919-9" />
               </svg>
               {token.website.replace(/^https?:\/\//, '')}
             </a>
@@ -122,6 +140,14 @@ export default function TokenCard({ token }: TokenCardProps) {
             </a>
           </div>
         )}
+        {/* Market Cap Display */}
+        {isLoadingMarket ? (
+          <div className="animate-pulse bg-gray-700 rounded h-4 w-16"></div>
+        ) : marketData?.market?.marketCap ? (
+          <div className="text-[#a1a1aa] text-xs">
+            MC: {MarketService.formatMarketCap(marketData.market.marketCap)}
+          </div>
+        ) : null}
         <div className="flex items-center justify-between">
           <span className="text-[#a1a1aa] text-xs">
             {formatDate(token.created_at)}

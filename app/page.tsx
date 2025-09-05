@@ -10,7 +10,9 @@ import TokenBalancesModal from "@/components/TokenBalancesModal";
 import DepositModal from "@/components/DepositModal";
 import WithdrawModal from "@/components/WithdrawModal";
 import TokenSuccessModal from "@/components/TokenSuccessModal";
+import FilterPanel, { FilterOptions } from "@/components/FilterPanel";
 import { TokenService, ApiToken } from "@/lib/tokenService";
+import { MarketService, TokenMarketResponse } from "@/lib/marketService";
 import { getBalanceOf } from "cavos-service-sdk";
 import { userAtom } from "@/lib/auth-atoms";
 import { useAtom } from "jotai";
@@ -25,9 +27,16 @@ export default function Home() {
     useState(false);
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [isWithdrawModalOpen, setIsWithdrawModalOpen] = useState(false);
+  const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
   const [tokens, setTokens] = useState<ApiToken[]>([]);
+  const [tokenMarketData, setTokenMarketData] = useState<Map<string, TokenMarketResponse>>(new Map());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filters, setFilters] = useState<FilterOptions>({
+    minMarketCap: null,
+    maxMarketCap: null,
+    dateRange: 'all',
+  });
   
   // Preload token images for better performance
   const tokenImageUrls = tokens
@@ -43,15 +52,56 @@ export default function Home() {
   } = useWalletConnector();
   const [starkBalance, setStarkBalance] = useState(0);
 
-  // Success modal state
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [createdToken, setCreatedToken] = useState<ApiToken | null>(null);
 
-  const filteredTokens = tokens.filter(
-    (token) =>
-      token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      token.ticker.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Apply search and filters
+  const filteredTokens = tokens.filter((token) => {
+    // Search filter
+    const matchesSearch = token.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      token.ticker.toLowerCase().includes(searchQuery.toLowerCase());
+
+    if (!matchesSearch) return false;
+
+    // Market cap filter
+    if (filters.minMarketCap !== null || filters.maxMarketCap !== null) {
+      const marketData = tokenMarketData.get(token.contract_address || '');
+      const marketCap = marketData?.market?.marketCap;
+      
+      if (!marketCap) return false; // Hide tokens without market cap data when filtering by MC
+      
+      if (filters.minMarketCap !== null && marketCap < filters.minMarketCap) return false;
+      if (filters.maxMarketCap !== null && marketCap > filters.maxMarketCap) return false;
+    }
+
+    // Date range filter
+    if (filters.dateRange !== 'all') {
+      const tokenDate = new Date(token.created_at);
+      const now = new Date();
+      const diffTime = now.getTime() - tokenDate.getTime();
+      
+      const diffMinutes = Math.floor(diffTime / (1000 * 60));
+      const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+      switch (filters.dateRange) {
+        case '1h':
+          if (diffMinutes > 60) return false;
+          break;
+        case '24h':
+          if (diffHours > 24) return false;
+          break;
+        case '7d':
+          if (diffDays > 7) return false;
+          break;
+        case '30d':
+          if (diffDays > 30) return false;
+          break;
+      }
+    }
+
+    return true;
+  });
 
   const handleBagFunClick = () => {
     setIsTokenBalancesModalOpen(true);
@@ -94,6 +144,8 @@ export default function Home() {
         setError(result.error);
       } else {
         setTokens(result.data);
+        // Fetch market data for all tokens
+        fetchMarketDataForTokens(result.data);
       }
 
       // Balance fetching is now handled in separate useEffect
@@ -102,6 +154,31 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Fetch market data for tokens
+  const fetchMarketDataForTokens = async (tokenList: ApiToken[]) => {
+    const marketDataMap = new Map<string, TokenMarketResponse>();
+    
+    const promises = tokenList
+      .filter(token => token.contract_address)
+      .map(async (token) => {
+        try {
+          const marketData = await MarketService.getTokenMarketData(token.contract_address!);
+          if (marketData) {
+            marketDataMap.set(token.contract_address!, marketData);
+          }
+        } catch (error) {
+          // Silently fail for individual tokens
+        }
+      });
+
+    await Promise.all(promises);
+    setTokenMarketData(marketDataMap);
+  };
+
+  const handleFiltersChange = (newFilters: FilterOptions) => {
+    setFilters(newFilters);
   };
 
   useEffect(() => {
@@ -231,7 +308,24 @@ export default function Home() {
               </div>
             )}
 
-            <SearchBar onSearch={setSearchQuery} />
+            <div className="flex items-center gap-3">
+              <SearchBar onSearch={setSearchQuery} />
+              
+              {/* Filter Button */}
+              <button
+                onClick={() => setIsFilterPanelOpen(true)}
+                className="bg-[#1a1a1a] border border-[#333333] rounded-xl px-4 py-3 flex items-center gap-2 hover:bg-[#222222] hover:border-[#444444] transition-all duration-200"
+                title="Filter tokens"
+              >
+                <svg className="w-5 h-5 text-[#a1a1aa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
+                </svg>
+                <span className="text-[#a1a1aa] text-sm font-medium hidden sm:inline">Filter</span>
+                {(filters.minMarketCap !== null || filters.maxMarketCap !== null || filters.dateRange !== 'all') && (
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                )}
+              </button>
+            </div>
 
             <div className="lg:absolute lg:right-0">
               <button
@@ -383,6 +477,14 @@ export default function Home() {
           isOpen={isWithdrawModalOpen}
           onClose={() => setIsWithdrawModalOpen(false)}
           currentBalance={starkBalance}
+        />
+
+        {/* Filter Panel */}
+        <FilterPanel
+          isOpen={isFilterPanelOpen}
+          onClose={() => setIsFilterPanelOpen(false)}
+          onFiltersChange={handleFiltersChange}
+          initialFilters={filters}
         />
       </div>
     </div>
