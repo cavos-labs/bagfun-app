@@ -108,19 +108,25 @@ export default function CreateTokenModal({
     console.log("Create token transaction:", createTxResult);
 
     // Wait additional time for indexing
-    await new Promise((resolve) => setTimeout(resolve, 15000));
+    await new Promise((resolve) => setTimeout(resolve, 20000));
 
     // Get transaction details to extract contract address
-    const txDetails = await axios.get(
+    let txDetails = await axios.get(
       `/api/voyager/${createTxResult.transaction_hash}`
     );
 
-    const memecoinCreatedEvent = txDetails.data.receipt.events.find(
+    let memecoinCreatedEvent = txDetails.data.receipt.events.find(
       (event: any) => event.name === "OwnershipTransferred"
     );
 
     if (!memecoinCreatedEvent) {
-      throw new Error("MemecoinCreated event not found in transaction");
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+      txDetails = await axios.get(
+        `/api/voyager/${createTxResult.transaction_hash}`
+      );
+      memecoinCreatedEvent = txDetails.data.receipt.events.find(
+        (event: any) => event.name === "OwnershipTransferred"
+      );
     }
 
     const contractAddress = memecoinCreatedEvent.fromAddress;
@@ -137,8 +143,7 @@ export default function CreateTokenModal({
         entrypoint: "transfer",
         calldata: CallData.compile([
           "0x0656b69B8CcFE63932698c7f7e24Aa2745887240F2BDE82b66DeF746fa0FCaF2",
-          "16091183952307027001",
-          "0",
+          await formatAmount(20)
         ]),
       },
       {
@@ -196,8 +201,7 @@ export default function CreateTokenModal({
       // Check STRK balance
       if (starkBalance === null || starkBalance < 20) {
         setError(
-          `Insufficient STRK balance. You need at least 20 STRK to create a token. Current balance: ${
-            starkBalance?.toLocaleString() || 0
+          `Insufficient STRK balance. You need at least 20 STRK to create a token. Current balance: ${starkBalance?.toLocaleString() || 0
           } STRK`
         );
         return;
@@ -303,6 +307,15 @@ export default function CreateTokenModal({
               "0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc",
               "16091183952307027001",
               "0",
+            ],
+          },
+          {
+            contractAddress:
+              "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+            entrypoint: "transfer",
+            calldata: [
+              "0x0656b69B8CcFE63932698c7f7e24Aa2745887240F2BDE82b66DeF746fa0FCaF2",
+              await formatAmount(20)
             ],
           },
           {
@@ -439,25 +452,22 @@ export default function CreateTokenModal({
   return (
     <>
       <div
-        className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-200 ${
-          isVisible ? "opacity-100" : "opacity-0"
-        }`}
+        className={`fixed inset-0 z-50 flex items-center justify-center transition-opacity duration-200 ${isVisible ? "opacity-100" : "opacity-0"
+          }`}
       >
         {/* Backdrop */}
         <div
-          className={`absolute inset-0 transition-opacity duration-200 ${
-            isVisible ? "bg-opacity-40" : "bg-opacity-0"
-          }`}
+          className={`absolute inset-0 transition-opacity duration-200 ${isVisible ? "bg-opacity-40" : "bg-opacity-0"
+            }`}
           onClick={handleClose}
         />
 
         {/* Modal */}
         <div
-          className={`relative w-full max-w-md mx-4 bg-black rounded-2xl p-8 border border-[#333333] transform transition-all duration-200 max-h-[90vh] overflow-y-auto ${
-            isVisible
-              ? "translate-y-0 scale-100 opacity-100"
-              : "translate-y-4 scale-95 opacity-0"
-          }`}
+          className={`relative w-full max-w-md mx-4 bg-black rounded-2xl p-8 border border-[#333333] transform transition-all duration-200 max-h-[90vh] overflow-y-auto ${isVisible
+            ? "translate-y-0 scale-100 opacity-100"
+            : "translate-y-4 scale-95 opacity-0"
+            }`}
         >
           {/* Close button */}
           <button
@@ -507,11 +517,10 @@ export default function CreateTokenModal({
                   <div className="animate-spin rounded-full h-3 w-3 border border-white border-t-transparent"></div>
                 ) : (
                   <span
-                    className={`text-xs font-medium ${
-                      starkBalance !== null && starkBalance >= 40
-                        ? "text-green-400"
-                        : "text-red-400"
-                    }`}
+                    className={`text-xs font-medium ${starkBalance !== null && starkBalance >= 40
+                      ? "text-green-400"
+                      : "text-red-400"
+                      }`}
                   >
                     {starkBalance?.toLocaleString() || 0} STRK
                   </span>
@@ -525,14 +534,12 @@ export default function CreateTokenModal({
 
           {/* Error message */}
           <div
-            className={`overflow-hidden transition-all duration-300 ease-out ${
-              error ? "max-h-20 mb-4" : "max-h-0 mb-0"
-            }`}
+            className={`overflow-hidden transition-all duration-300 ease-out ${error ? "max-h-20 mb-4" : "max-h-0 mb-0"
+              }`}
           >
             <div
-              className={`p-3 bg-red-900/20 border border-red-500/20 rounded-lg text-red-400 text-sm transform transition-all duration-300 ${
-                error ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
-              }`}
+              className={`p-3 bg-red-900/20 border border-red-500/20 rounded-lg text-red-400 text-sm transform transition-all duration-300 ${error ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"
+                }`}
             >
               {error}
             </div>
@@ -541,9 +548,8 @@ export default function CreateTokenModal({
           {/* Form */}
           <form
             onSubmit={handleSubmit}
-            className={`space-y-6 transition-opacity duration-200 ${
-              loading ? "opacity-90" : "opacity-100"
-            }`}
+            className={`space-y-6 transition-opacity duration-200 ${loading ? "opacity-90" : "opacity-100"
+              }`}
           >
             {/* Image Upload */}
             <div className="space-y-2">
@@ -664,7 +670,7 @@ export default function CreateTokenModal({
               <label className="block text-white text-sm font-medium mb-2">
                 <span className="flex items-center gap-2">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm5.568 8.16l-1.61 7.589c-.12.556-.437.695-.886.433l-2.448-1.803-1.18 1.136c-.131.131-.241.241-.495.241l.177-2.506 4.589-4.147c.199-.177-.044-.275-.309-.098l-5.674 3.571-2.447-.765c-.532-.166-.542-.532.111-.787l9.552-3.684c.443-.166.832.099.687.787z"/>
+                    <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm5.568 8.16l-1.61 7.589c-.12.556-.437.695-.886.433l-2.448-1.803-1.18 1.136c-.131.131-.241.241-.495.241l.177-2.506 4.589-4.147c.199-.177-.044-.275-.309-.098l-5.674 3.571-2.447-.765c-.532-.166-.542-.532.111-.787l9.552-3.684c.443-.166.832.099.687.787z" />
                   </svg>
                   Telegram Group
                 </span>
@@ -687,7 +693,7 @@ export default function CreateTokenModal({
               <label className="block text-white text-sm font-medium mb-2">
                 <span className="flex items-center gap-2">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                   </svg>
                   X Profile
                 </span>
@@ -715,15 +721,14 @@ export default function CreateTokenModal({
               className="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
             >
               <span
-                className={`transition-opacity duration-200 ${
-                  loading ? "opacity-0" : "opacity-100"
-                }`}
+                className={`transition-opacity duration-200 ${loading ? "opacity-0" : "opacity-100"
+                  }`}
               >
                 {!user?.wallet_address && !isWalletConnected
                   ? "Connect Wallet First"
                   : starkBalance !== null && starkBalance < 20
-                  ? "Insufficient STRK Balance"
-                  : "Create Token"}
+                    ? "Insufficient STRK Balance"
+                    : "Create Token"}
               </span>
               {loading && (
                 <div className="absolute inset-0 flex items-center justify-center">
