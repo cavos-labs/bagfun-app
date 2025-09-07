@@ -37,23 +37,18 @@ export default function OptimizedImage({
   // Use image preloader for IPFS optimization
   const { optimizedSrc, isPreloading, handleHover } = useImagePreloader(src, {
     preloadOnHover,
-    cacheInMemory: true,
+    priority,
   });
 
   // Get optimized URLs if it's an IPFS URL
   const optimizedUrls = isIPFSUrl(src) ? getOptimizedIPFSUrls(src) : [src];
 
   useEffect(() => {
-    if (isIPFSUrl(src)) {
-      // Use optimized URL if available, otherwise use first gateway URL
-      setCurrentSrc(optimizedSrc || optimizedUrls[0]);
-      setUrlIndex(0);
-    } else {
-      setCurrentSrc(src);
-    }
+    setCurrentSrc(optimizedSrc);
     setHasError(false);
     setIsLoading(true);
-  }, [src, optimizedSrc]);
+    setShowSkeleton(true);
+  }, [optimizedSrc]);
 
   const handleLoad = () => {
     setIsLoading(false);

@@ -44,15 +44,15 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block w-48 h-screen bg-[#141414] border-r border-[#333333] p-8 flex-col items-center fixed left-0 top-0 lg:flex">
+      <div className="hidden w-48 h-screen bg-[#141414] border-r border-[#333333] p-8 flex-col items-center fixed left-0 top-0 lg:flex">
         <div className="mb-8">
-          <button
-            onClick={onBagFunClick}
+          <a
+            href="/"
             className="text-white text-3xl font-bold hover:opacity-80 transition-opacity duration-200 text-center"
             style={{ fontFamily: 'RamaGothicBold, sans-serif' }}
           >
             BAG.FUN
-          </button>
+          </a>
         </div>
         
         <nav className="flex flex-col gap-4 items-center w-full">

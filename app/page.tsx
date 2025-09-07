@@ -416,7 +416,7 @@ export default function Home() {
                   className="animate-fade-in-up"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <TokenCard token={token} />
+                  <TokenCard token={token} priority={index < 8} />
                 </div>
               ))}
             </div>

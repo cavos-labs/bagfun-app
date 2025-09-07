@@ -30,6 +30,8 @@ interface Token {
   image_url?: string;
   contract_address: string;
   website?: string;
+  telegram_url?: string;
+  x_url?: string;
   created_at: string;
   amount: number;
   creator_address: string;
@@ -690,16 +692,50 @@ export default function TokenPage() {
                     <p className="text-[#a1a1aa] mb-4">{token.description}</p>
                   )}
 
-                  {token.website && (
-                    <a
-                      href={token.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-400 hover:text-blue-300 text-sm"
-                    >
-                      {token.website}
-                    </a>
-                  )}
+                  {/* Social Links */}
+                  <div className="flex flex-wrap gap-3">
+                    {token.website && (
+                      <a
+                        href={token.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm transition-colors duration-200"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 919-9" />
+                        </svg>
+                        Website
+                      </a>
+                    )}
+                    
+                    {token.telegram_url && (
+                      <a
+                        href={token.telegram_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm transition-colors duration-200"
+                      >
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm5.568 8.16l-1.61 7.589c-.12.556-.437.695-.886.433l-2.448-1.803-1.18 1.136c-.131.131-.241.241-.495.241l.177-2.506 4.589-4.147c.199-.177-.044-.275-.309-.098l-5.674 3.571-2.447-.765c-.532-.166-.542-.532.111-.787l9.552-3.684c.443-.166.832.099.687.787z"/>
+                        </svg>
+                        Telegram
+                      </a>
+                    )}
+                    
+                    {token.x_url && (
+                      <a
+                        href={token.x_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm transition-colors duration-200"
+                      >
+                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                        </svg>
+                        X
+                      </a>
+                    )}
+                  </div>
                 </div>
 
                 {/* Market Stats */}

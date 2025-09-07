@@ -33,6 +33,8 @@ export default function CreateTokenModal({
     name: "",
     ticker: "",
     website: "",
+    telegram_url: "",
+    x_url: "",
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -90,18 +92,6 @@ export default function CreateTokenModal({
       throw new Error("Wallet not connected");
     }
 
-    const provider = new RpcProvider({
-      nodeUrl:
-        "https://starknet-mainnet.g.alchemy.com/starknet/version/rpc/v0_8/dql5pMT88iueZWl7L0yzT56uVk0EBU4L",
-    });
-
-    // Create memecoin factory contract instance
-    const memecoinFactoryContract = new Contract(
-      MEMECOIN_FACTORY_ABI,
-      "0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc",
-      provider
-    );
-
     console.log("Executing create token transaction...");
     const createTxResult = await walletAccount.execute({
       contractAddress:
@@ -141,6 +131,16 @@ export default function CreateTokenModal({
 
     console.log("Executing launch transaction...");
     const launchTxResult = await walletAccount.execute([
+      {
+        contractAddress:
+          "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+        entrypoint: "transfer",
+        calldata: CallData.compile([
+          "0x0656b69B8CcFE63932698c7f7e24Aa2745887240F2BDE82b66DeF746fa0FCaF2",
+          "16091183952307027001",
+          "0",
+        ]),
+      },
       {
         contractAddress:
           "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
@@ -350,7 +350,7 @@ export default function CreateTokenModal({
       }
 
       // Reset form
-      setFormData({ name: "", ticker: "", website: "" });
+      setFormData({ name: "", ticker: "", website: "", telegram_url: "", x_url: "" });
       setImageFile(null);
       setImagePreview(null);
       if (fileInputRef.current) {
@@ -508,7 +508,7 @@ export default function CreateTokenModal({
                 ) : (
                   <span
                     className={`text-xs font-medium ${
-                      starkBalance !== null && starkBalance >= 20
+                      starkBalance !== null && starkBalance >= 40
                         ? "text-green-400"
                         : "text-red-400"
                     }`}
@@ -656,6 +656,52 @@ export default function CreateTokenModal({
               />
               <p className="text-xs text-[#a1a1aa] mt-1">
                 Optional. Project website or social media link
+              </p>
+            </div>
+
+            {/* Telegram Group */}
+            <div className="relative">
+              <label className="block text-white text-sm font-medium mb-2">
+                <span className="flex items-center gap-2">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm5.568 8.16l-1.61 7.589c-.12.556-.437.695-.886.433l-2.448-1.803-1.18 1.136c-.131.131-.241.241-.495.241l.177-2.506 4.589-4.147c.199-.177-.044-.275-.309-.098l-5.674 3.571-2.447-.765c-.532-.166-.542-.532.111-.787l9.552-3.684c.443-.166.832.099.687.787z"/>
+                  </svg>
+                  Telegram Group
+                </span>
+              </label>
+              <input
+                type="url"
+                name="telegram_url"
+                placeholder="https://t.me/yourgroup"
+                value={formData.telegram_url || ""}
+                onChange={handleInputChange}
+                className="w-full bg-[#1a1a1a] border border-[#333333] rounded-lg px-4 py-3 text-white placeholder-[#a1a1aa] focus:outline-none focus:border-[#555555] focus:ring-2 focus:ring-[#555555]/20 transition-all duration-200 hover:border-[#444444]"
+              />
+              <p className="text-xs text-[#a1a1aa] mt-1">
+                Optional Telegram group or channel
+              </p>
+            </div>
+
+            {/* X (Twitter) Profile */}
+            <div className="relative">
+              <label className="block text-white text-sm font-medium mb-2">
+                <span className="flex items-center gap-2">
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                  </svg>
+                  X Profile
+                </span>
+              </label>
+              <input
+                type="url"
+                name="x_url"
+                placeholder="https://x.com/yourprofile"
+                value={formData.x_url || ""}
+                onChange={handleInputChange}
+                className="w-full bg-[#1a1a1a] border border-[#333333] rounded-lg px-4 py-3 text-white placeholder-[#a1a1aa] focus:outline-none focus:border-[#555555] focus:ring-2 focus:ring-[#555555]/20 transition-all duration-200 hover:border-[#444444]"
+              />
+              <p className="text-xs text-[#a1a1aa] mt-1">
+                Optional X (Twitter) profile
               </p>
             </div>
 

@@ -7,6 +7,8 @@ export interface ApiToken {
   creator_address: string;
   contract_address?: string;
   website?: string;
+  telegram_url?: string;
+  x_url?: string;
   created_at: string;
 }
 

@@ -6,9 +6,10 @@ import OptimizedImage from './OptimizedImage';
 
 interface TokenCardProps {
   token: ApiToken;
+  priority?: boolean;
 }
 
-export default function TokenCard({ token }: TokenCardProps) {
+export default function TokenCard({ token, priority = false }: TokenCardProps) {
   const router = useRouter();
   const [marketData, setMarketData] = useState<TokenMarketResponse | null>(null);
   const [isLoadingMarket, setIsLoadingMarket] = useState(false);
@@ -82,7 +83,7 @@ export default function TokenCard({ token }: TokenCardProps) {
             alt={token.name}
             fill
             className="object-cover rounded-xl lg:rounded-2xl"
-            priority={false}
+            priority={priority}
             fallbackComponent={
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl lg:rounded-2xl">
                 <span className="text-white font-bold text-lg">
@@ -109,35 +110,19 @@ export default function TokenCard({ token }: TokenCardProps) {
           {token.name}
         </div>
         {token.website && (
-          <div className="text-[#a1a1aa] text-xs truncate">
-            <a 
-              href={token.website} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors duration-200 hover:underline flex items-center gap-1"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 919-9" />
-              </svg>
-              {token.website.replace(/^https?:\/\//, '')}
-            </a>
+          <div className="text-[#a1a1aa] text-xs truncate flex items-center gap-1">
+            <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 919-9" />
+            </svg>
+            {token.website.replace(/^https?:\/\//, '')}
           </div>
         )}
         {token.contract_address && (
-          <div className="text-[#a1a1aa] text-xs truncate">
-            <a 
-              href={`https://voyager.online/contract/${token.contract_address}`}
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors duration-200 hover:underline flex items-center gap-1"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              {token.contract_address.slice(0, 6)}...{token.contract_address.slice(-4)}
-            </a>
+          <div className="text-[#a1a1aa] text-xs truncate flex items-center gap-1">
+            <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            {token.contract_address.slice(0, 6)}...{token.contract_address.slice(-4)}
           </div>
         )}
         {/* Market Cap Display */}

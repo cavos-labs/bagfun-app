@@ -1,106 +1,56 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
-import { getFastestIPFSUrl, isIPFSUrl } from './imageUtils';
+import { getOptimizedIPFSUrls, isIPFSUrl } from './imageUtils';
 
 interface ImagePreloaderOptions {
   preloadOnHover?: boolean;
-  cacheInMemory?: boolean;
+  priority?: boolean;
 }
 
-// In-memory cache for preloaded images
-const imageCache = new Map<string, string>();
-const loadingPromises = new Map<string, Promise<string>>();
+// Simple in-memory cache for optimized URLs
+const urlCache = new Map<string, string>();
 
 export function useImagePreloader(src: string, options: ImagePreloaderOptions = {}) {
-  const { preloadOnHover = false, cacheInMemory = true } = options;
+  const { preloadOnHover = false, priority = false } = options;
   const [optimizedSrc, setOptimizedSrc] = useState<string>(src);
-  const [isPreloading, setIsPreloading] = useState(isIPFSUrl(src));
+  const [isPreloading, setIsPreloading] = useState(false);
 
-  const preloadImage = useCallback(async (imageSrc: string) => {
-    // Check if already cached
-    if (cacheInMemory && imageCache.has(imageSrc)) {
-      return imageCache.get(imageSrc)!;
-    }
-
-    // Check if already loading
-    if (loadingPromises.has(imageSrc)) {
-      return loadingPromises.get(imageSrc)!;
-    }
-
-    // Start loading
-    const loadPromise = (async () => {
-      if (isIPFSUrl(imageSrc)) {
-        const fastestUrl = await getFastestIPFSUrl(imageSrc);
-        if (cacheInMemory) {
-          imageCache.set(imageSrc, fastestUrl);
-        }
-        return fastestUrl;
-      }
-      return imageSrc;
-    })();
-
-    if (cacheInMemory) {
-      loadingPromises.set(imageSrc, loadPromise);
-    }
-
-    try {
-      const result = await loadPromise;
-      loadingPromises.delete(imageSrc);
-      return result;
-    } catch (error) {
-      loadingPromises.delete(imageSrc);
-      throw error;
-    }
-  }, [cacheInMemory]);
-
-  // Aggressive preloading - start immediately for IPFS URLs
+  // Get best IPFS URL immediately for IPFS images
   useEffect(() => {
     if (isIPFSUrl(src)) {
-      // Check if already cached first
-      if (imageCache.has(src)) {
-        setOptimizedSrc(imageCache.get(src)!);
-        setIsPreloading(false);
+      // Check cache first
+      if (urlCache.has(src)) {
+        setOptimizedSrc(urlCache.get(src)!);
         return;
       }
 
-      if (!preloadOnHover) {
-        setIsPreloading(true);
-        preloadImage(src)
-          .then((optimized) => {
-            setOptimizedSrc(optimized);
-          })
-          .finally(() => {
-            setIsPreloading(false);
-          });
-      }
-    } else {
-      setIsPreloading(false);
+      // Get the first (fastest) gateway URL immediately
+      const optimizedUrls = getOptimizedIPFSUrls(src);
+      const fastestUrl = optimizedUrls[0]; // Cloudflare IPFS is first in our list
+      
+      setOptimizedSrc(fastestUrl);
+      urlCache.set(src, fastestUrl);
     }
-  }, [src, preloadOnHover, preloadImage]);
+  }, [src]);
 
   const handleHover = useCallback(() => {
-    if (preloadOnHover && isIPFSUrl(src) && !imageCache.has(src)) {
+    // For hover preload, we can trigger Next.js Image preload
+    if (preloadOnHover && !priority) {
       setIsPreloading(true);
-      preloadImage(src)
-        .then((optimized) => {
-          setOptimizedSrc(optimized);
-        })
-        .finally(() => {
-          setIsPreloading(false);
-        });
+      // Next.js will handle the actual preloading via Image component
+      setTimeout(() => setIsPreloading(false), 100);
     }
-  }, [src, preloadOnHover, preloadImage]);
+  }, [preloadOnHover, priority]);
 
   return {
     optimizedSrc,
     isPreloading,
     handleHover,
-    preloadImage,
   };
-}
+};
 
-// Hook for bulk preloading (useful for token lists)
+// Simplified bulk preloader that leverages Next.js Image caching
 export function useBulkImagePreloader(sources: string[]) {
   const [preloadedCount, setPreloadedCount] = useState(0);
   const [isPreloading, setIsPreloading] = useState(false);
@@ -111,33 +61,22 @@ export function useBulkImagePreloader(sources: string[]) {
     setIsPreloading(true);
     setPreloadedCount(0);
 
-    const promises = sources.map(async (src, index) => {
-      if (isIPFSUrl(src) && !imageCache.has(src)) {
-        try {
-          const optimized = await getFastestIPFSUrl(src);
-          imageCache.set(src, optimized);
-          setPreloadedCount(prev => prev + 1);
-          return optimized;
-        } catch {
-          setPreloadedCount(prev => prev + 1);
-          return src;
-        }
+    // Pre-optimize all IPFS URLs immediately
+    sources.forEach((src, index) => {
+      if (isIPFSUrl(src) && !urlCache.has(src)) {
+        const optimizedUrls = getOptimizedIPFSUrls(src);
+        const fastestUrl = optimizedUrls[0];
+        urlCache.set(src, fastestUrl);
       }
       setPreloadedCount(prev => prev + 1);
-      return src;
     });
 
-    try {
-      await Promise.all(promises);
-    } finally {
-      setIsPreloading(false);
-    }
+    setIsPreloading(false);
   }, [sources]);
 
   useEffect(() => {
-    // Start preloading immediately for better perceived performance
-    const timer = setTimeout(preloadAll, 10);
-    return () => clearTimeout(timer);
+    // Pre-optimize URLs immediately
+    preloadAll();
   }, [preloadAll]);
 
   return {
