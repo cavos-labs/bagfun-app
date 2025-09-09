@@ -150,13 +150,13 @@ export default function WithdrawModal({
       <div className="absolute inset-0 bg-opacity-50" onClick={handleClose} />
 
       {/* Modal */}
-      <div className="relative bg-[#1a1a1a] border border-[#333333] rounded-2xl p-6 w-full max-w-md mx-4">
+      <div className="relative theme-bg-secondary theme-border-primary border rounded-2xl p-6 w-full max-w-md mx-4">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-white text-xl font-semibold">Withdraw STRK</h2>
+          <h2 className="theme-text-primary text-xl font-semibold">Withdraw STRK</h2>
           <button
             onClick={handleClose}
             disabled={isLoading}
-            className="text-[#a1a1aa] hover:text-white transition-colors duration-200 disabled:opacity-50"
+            className="theme-text-secondary hover:theme-text-primary transition-colors duration-200 disabled:opacity-50"
           >
             <svg
               className="w-6 h-6"
@@ -176,16 +176,16 @@ export default function WithdrawModal({
 
         <div className="space-y-4">
           {/* Current Balance */}
-          <div className="bg-[#141414] border border-[#333333] rounded-lg p-3">
-            <p className="text-[#a1a1aa] text-sm">Available Balance</p>
-            <p className="text-white font-semibold text-lg">
+          <div className="theme-bg-tertiary theme-border-primary border rounded-lg p-3">
+            <p className="theme-text-secondary text-sm">Available Balance</p>
+            <p className="theme-text-primary font-semibold text-lg">
               {currentBalance.toLocaleString()} STRK
             </p>
           </div>
 
           {/* Recipient Address */}
           <div>
-            <label className="block text-white text-sm font-medium mb-2">
+            <label className="block theme-text-primary text-sm font-medium mb-2">
               Recipient Address
             </label>
             <input
@@ -198,7 +198,7 @@ export default function WithdrawModal({
               }}
               placeholder="0x..."
               disabled={isLoading}
-              className="w-full bg-[#141414] border border-[#333333] rounded-lg px-3 py-2 text-white placeholder-[#a1a1aa] focus:border-blue-500 focus:outline-none disabled:opacity-50"
+              className="w-full theme-bg-tertiary theme-border-primary border rounded-lg px-3 py-2 theme-text-primary placeholder:theme-text-tertiary focus:border-blue-500 focus:outline-none disabled:opacity-50"
             />
             {recipientAddress && !recipientAddress.startsWith("0x") && (
               <p className="text-red-400 text-xs mt-1">
@@ -209,7 +209,7 @@ export default function WithdrawModal({
 
           {/* Amount */}
           <div>
-            <label className="block text-white text-sm font-medium mb-2">
+            <label className="block theme-text-primary text-sm font-medium mb-2">
               Amount (STRK)
             </label>
             <input
@@ -225,7 +225,7 @@ export default function WithdrawModal({
               max={currentBalance}
               step="0.000000000000000001"
               disabled={isLoading}
-              className="w-full bg-[#141414] border border-[#333333] rounded-lg px-3 py-2 text-white placeholder-[#a1a1aa] focus:border-blue-500 focus:outline-none disabled:opacity-50"
+              className="w-full theme-bg-tertiary theme-border-primary border rounded-lg px-3 py-2 theme-text-primary placeholder:theme-text-tertiary focus:border-blue-500 focus:outline-none disabled:opacity-50"
             />
             <button
               onClick={() => {
@@ -274,7 +274,7 @@ export default function WithdrawModal({
             <button
               onClick={handleClose}
               disabled={isLoading}
-              className="flex-1 bg-[#333333] text-white px-4 py-2 rounded-lg font-medium hover:bg-[#444444] transition-colors duration-200 disabled:opacity-50"
+              className="flex-1 theme-bg-accent theme-text-primary px-4 py-2 rounded-lg font-medium hover:theme-bg-accent transition-colors duration-200 disabled:opacity-50"
             >
               Cancel
             </button>

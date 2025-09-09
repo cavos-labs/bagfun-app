@@ -73,7 +73,7 @@ export default function TokenCard({ token, priority = false }: TokenCardProps) {
   return (
     <div 
       onClick={handleClick}
-      className="bg-[#141414] rounded-xl lg:rounded-2xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:bg-[#1a1a1a] transition-colors duration-200 cursor-pointer"
+      className="theme-bg-secondary rounded-xl lg:rounded-2xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 hover:theme-bg-accent transition-colors duration-200 cursor-pointer"
     >
       {/* Left: Token Image */}
       <div className="relative w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 rounded-xl lg:rounded-2xl overflow-hidden bg-white flex-shrink-0">
@@ -103,14 +103,14 @@ export default function TokenCard({ token, priority = false }: TokenCardProps) {
 
       {/* Right: Token Info */}
       <div className="flex flex-col justify-center space-y-1 min-w-0 flex-1">
-        <div className="text-white font-regular text-base sm:text-lg lg:text-xl">
+        <div className="theme-text-primary font-regular text-base sm:text-lg lg:text-xl">
           ${token.ticker}
         </div>
-        <div className="text-[#a1a1aa] text-sm sm:text-base truncate">
+        <div className="theme-text-secondary text-sm sm:text-base truncate">
           {token.name}
         </div>
         {token.website && (
-          <div className="text-[#a1a1aa] text-xs truncate flex items-center gap-1">
+          <div className="theme-text-secondary text-xs truncate flex items-center gap-1">
             <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 919-9" />
             </svg>
@@ -118,7 +118,7 @@ export default function TokenCard({ token, priority = false }: TokenCardProps) {
           </div>
         )}
         {token.contract_address && (
-          <div className="text-[#a1a1aa] text-xs truncate flex items-center gap-1">
+          <div className="theme-text-secondary text-xs truncate flex items-center gap-1">
             <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
@@ -129,12 +129,12 @@ export default function TokenCard({ token, priority = false }: TokenCardProps) {
         {isLoadingMarket ? (
           <div className="animate-pulse bg-gray-700 rounded h-4 w-16"></div>
         ) : marketData?.market?.marketCap ? (
-          <div className="text-[#a1a1aa] text-xs">
+          <div className="theme-text-secondary text-xs">
             MC: {MarketService.formatMarketCap(marketData.market.marketCap)}
           </div>
         ) : null}
         <div className="flex items-center justify-between">
-          <span className="text-[#a1a1aa] text-xs">
+          <span className="theme-text-secondary text-xs">
             {formatDate(token.created_at)}
           </span>
         </div>

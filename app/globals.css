@@ -8,10 +8,31 @@
 }
 
 :root {
+  /* Dark theme (default) */
   --background: #141414;
   --foreground: #ffffff;
   --card-background: #1a1a1a;
+  --tertiary-background: #0a0a0a;
+  --accent-background: #333333;
   --secondary-text: #a1a1aa;
+  --tertiary-text: #666666;
+  --border-color: #333333;
+  --border-color-hover: #444444;
+  --success: #10b981;
+  --danger: #ef4444;
+}
+
+[data-theme="light"] {
+  /* Light theme */
+  --background: #f9fafb;
+  --foreground: #111827;
+  --card-background: #ffffff;
+  --tertiary-background: #f3f4f6;
+  --accent-background: #e5e7eb;
+  --secondary-text: #6b7280;
+  --tertiary-text: #9ca3af;
+  --border-color: #e5e7eb;
+  --border-color-hover: #d1d5db;
   --success: #10b981;
   --danger: #ef4444;
 }
@@ -29,6 +50,55 @@ body {
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
   padding: 0;
+}
+
+/* Theme utility classes */
+.theme-bg-primary { background-color: var(--background) !important; }
+.theme-bg-secondary { background-color: var(--card-background) !important; }
+.theme-bg-tertiary { background-color: var(--tertiary-background) !important; }
+.theme-bg-accent { background-color: var(--accent-background) !important; }
+
+.theme-text-primary { color: var(--foreground) !important; }
+.theme-text-secondary { color: var(--secondary-text) !important; }
+.theme-text-tertiary { color: var(--tertiary-text) !important; }
+
+.theme-border-primary { border-color: var(--border-color) !important; }
+.theme-border-secondary { border-color: var(--border-color-hover) !important; }
+
+/* Hover states */
+.hover\:theme-bg-primary:hover { background-color: var(--background) !important; }
+.hover\:theme-bg-secondary:hover { background-color: var(--card-background) !important; }
+.hover\:theme-bg-accent:hover { background-color: var(--accent-background) !important; }
+.hover\:theme-text-primary:hover { color: var(--foreground) !important; }
+.hover\:theme-text-secondary:hover { color: var(--secondary-text) !important; }
+.hover\:theme-border-primary:hover { border-color: var(--border-color) !important; }
+.hover\:theme-border-secondary:hover { border-color: var(--border-color-hover) !important; }
+
+/* Focus states */
+.focus\:theme-border-primary:focus { border-color: var(--border-color) !important; }
+.focus\:theme-border-secondary:focus { border-color: var(--border-color-hover) !important; }
+
+/* Placeholder states */
+.placeholder\:theme-text-tertiary::placeholder { color: var(--tertiary-text) !important; }
+
+/* Inverse theme classes for buttons (light buttons on dark theme, dark buttons on light theme) */
+.theme-button-primary { 
+  background-color: var(--foreground) !important; 
+  color: var(--background) !important; 
+}
+.theme-button-secondary { 
+  background-color: var(--secondary-text) !important; 
+  color: var(--background) !important; 
+}
+
+/* Hover states for inverse buttons */
+.hover\:theme-button-primary:hover { 
+  background-color: var(--secondary-text) !important; 
+  color: var(--background) !important; 
+}
+.hover\:theme-button-secondary:hover { 
+  background-color: var(--tertiary-text) !important; 
+  color: var(--background) !important; 
 }
 
 * {

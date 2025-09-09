@@ -54,24 +54,24 @@ export default function DepositModal({ isOpen, onClose, walletAddress }: Deposit
     }`}>
       {/* Backdrop */}
       <div 
-        className={`absolute inset-0 bg-black transition-opacity duration-200 ${
+        className={`absolute inset-0 transition-opacity duration-200 ${
           isVisible ? 'bg-opacity-40' : 'bg-opacity-0'
         }`}
         onClick={handleClose}
       />
       
       {/* Modal */}
-      <div className={`relative w-full max-w-md mx-4 bg-[#1a1a1a] border border-[#333333] rounded-2xl p-6 transform transition-all duration-200 ${
+      <div className={`relative w-full max-w-md mx-4 theme-bg-secondary theme-border-primary border rounded-2xl p-6 transform transition-all duration-200 ${
         isVisible 
           ? 'translate-y-0 scale-100 opacity-100' 
           : 'translate-y-4 scale-95 opacity-0'
       }`}>
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-white text-xl font-semibold">Add STRK</h2>
+          <h2 className="theme-text-primary text-xl font-semibold">Add STRK</h2>
           <button
             onClick={handleClose}
-            className="text-[#a1a1aa] hover:text-white transition-colors duration-200"
+            className="theme-text-secondary hover:theme-text-primary transition-colors duration-200"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -82,7 +82,7 @@ export default function DepositModal({ isOpen, onClose, walletAddress }: Deposit
         {/* Options */}
         <div className="space-y-3">
           {/* Deposit from Starknet Wallet */}
-          <div className="bg-[#0a0a0a] border border-[#333333] rounded-xl p-4 hover:border-[#444444] transition-colors duration-200">
+          <div className="theme-bg-tertiary theme-border-primary border rounded-xl p-4 hover:theme-border-secondary transition-colors duration-200">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
                 <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -90,19 +90,19 @@ export default function DepositModal({ isOpen, onClose, walletAddress }: Deposit
                 </svg>
               </div>
               <div>
-                <h3 className="text-white font-semibold">Deposit from Starknet Wallet</h3>
-                <p className="text-[#a1a1aa] text-sm">Send STRK to your wallet address</p>
+                <h3 className="theme-text-primary font-semibold">Deposit from Starknet Wallet</h3>
+                <p className="theme-text-secondary text-sm">Send STRK to your wallet address</p>
               </div>
             </div>
             
             {walletAddress && (
               <div className="space-y-3">
-                <div className="bg-[#141414] border border-[#333333] rounded-lg p-4">
+                <div className="theme-bg-primary theme-border-primary border rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-[#a1a1aa] text-xs mb-2">Your Wallet Address</p>
+                      <p className="theme-text-secondary text-xs mb-2">Your Wallet Address</p>
                       <div className="flex items-center gap-2">
-                        <span className="text-white font-mono text-sm bg-[#0a0a0a] px-2 py-1 rounded border border-[#333333]">
+                        <span className="theme-text-primary font-mono text-sm theme-bg-tertiary px-2 py-1 rounded theme-border-primary border">
                           {walletAddress.slice(0, 6)}...{walletAddress.slice(-6)}
                         </span>
                         <button
@@ -134,7 +134,7 @@ export default function DepositModal({ isOpen, onClose, walletAddress }: Deposit
           </div>
 
           {/* Buy Crypto */}
-          <div className="bg-[#0a0a0a] border border-[#333333] rounded-xl p-4 hover:border-[#444444] transition-colors duration-200">
+          <div className="theme-bg-tertiary theme-border-primary border rounded-xl p-4 hover:theme-border-secondary transition-colors duration-200">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
                 <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -142,8 +142,8 @@ export default function DepositModal({ isOpen, onClose, walletAddress }: Deposit
                 </svg>
               </div>
               <div>
-                <h3 className="text-white font-semibold">Buy Crypto</h3>
-                <p className="text-[#a1a1aa] text-sm">Purchase STRK with fiat currency</p>
+                <h3 className="theme-text-primary font-semibold">Buy Crypto</h3>
+                <p className="theme-text-secondary text-sm">Purchase STRK with fiat currency</p>
               </div>
             </div>
             
@@ -160,8 +160,8 @@ export default function DepositModal({ isOpen, onClose, walletAddress }: Deposit
         </div>
 
         {/* Footer */}
-        <div className="mt-6 pt-4 border-t border-[#333333]">
-          <p className="text-[#666666] text-xs text-center">
+        <div className="mt-6 pt-4 border-t theme-border-primary">
+          <p className="theme-text-tertiary text-xs text-center">
             Make sure you're sending STRK tokens to the correct network (Starknet)
           </p>
         </div>

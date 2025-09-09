@@ -7,6 +7,7 @@ import { useAtom } from 'jotai';
 import Sidebar from '@/components/Sidebar';
 import TokenBalancesModal from '@/components/TokenBalancesModal';
 import { userAtom } from '@/lib/auth-atoms';
+import { themeClassesAtom } from '@/lib/theme-atoms';
 import { useWalletConnector } from '@/lib/useWalletConnector';
 import { QuotesService, AVNUQuote } from '@/lib/quotesService';
 import { SwapService, SwapParams } from '@/lib/swapService';
@@ -49,6 +50,7 @@ export default function TokenPage() {
   const [allTokens, setAllTokens] = useState<Token[]>([]);
   const [tradingMode, setTradingMode] = useState<'buy' | 'sell'>('buy');
   const [user, setUser] = useAtom(userAtom);
+  const [themeClasses] = useAtom(themeClassesAtom);
   const { isConnected: isWalletConnected, address: walletAddress, account: walletAccount } = useWalletConnector();
   const [starkBalance, setStarkBalance] = useState(0);
   const [quote, setQuote] = useState<AVNUQuote | null>(null);
@@ -541,13 +543,13 @@ export default function TokenPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#141414]">
+      <div className="min-h-screen theme-bg-primary">
         <Sidebar onBagFunClick={handleBagFunClick} />
         <div className="lg:ml-48 flex flex-col min-h-screen pt-16 lg:pt-0">
           <main className="flex-1 p-4 lg:p-8 flex items-center justify-center">
             <div className="text-center">
               <div className="animate-spin rounded-full h-12 w-12 border-2 border-white border-t-transparent mx-auto mb-4"></div>
-              <p className="text-[#a1a1aa]">Loading token...</p>
+              <p className="theme-text-secondary">Loading token...</p>
             </div>
           </main>
         </div>
@@ -557,7 +559,7 @@ export default function TokenPage() {
 
   if (error || !token) {
     return (
-      <div className="min-h-screen bg-[#141414]">
+      <div className="min-h-screen theme-bg-primary">
         <Sidebar onBagFunClick={handleBagFunClick} />
         <div className="lg:ml-48 flex flex-col min-h-screen pt-16 lg:pt-0">
           <main className="flex-1 p-4 lg:p-8 flex items-center justify-center">
@@ -565,11 +567,11 @@ export default function TokenPage() {
               <svg className="w-24 h-24 mx-auto mb-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.314 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
-              <h2 className="text-white text-2xl font-bold mb-4">Token Not Found</h2>
-              <p className="text-[#a1a1aa] mb-6">{error || 'The requested token could not be found.'}</p>
+              <h2 className="theme-text-primary text-2xl font-bold mb-4">Token Not Found</h2>
+              <p className="theme-text-secondary mb-6">{error || 'The requested token could not be found.'}</p>
               <button
                 onClick={handleBagFunClick}
-                className="bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-200"
+                className="theme-button-primary hover:theme-button-secondary px-8 py-3 rounded-lg font-semibold transition-colors duration-200"
               >
                 Back to Home
               </button>
@@ -581,7 +583,7 @@ export default function TokenPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#141414]">
+    <div className="min-h-screen theme-bg-primary">
       <Sidebar onBagFunClick={handleBagFunClick} />
 
       <div className="lg:ml-48 flex flex-col min-h-screen pt-16 lg:pt-0">
@@ -591,7 +593,7 @@ export default function TokenPage() {
             <div className="flex items-center">
               <button
                 onClick={handleBackClick}
-                className="text-[#a1a1aa] hover:text-white transition-colors duration-200 mr-4"
+                className="theme-text-secondary hover:theme-text-primary transition-colors duration-200 mr-4"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -601,7 +603,7 @@ export default function TokenPage() {
 
             {/* Balance Display */}
             {(user || isWalletConnected) && (
-              <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl px-3 lg:px-4 py-2">
+              <div className="theme-bg-secondary theme-border-primary border rounded-xl px-3 lg:px-4 py-2">
                 <div className="flex items-center gap-2">
                   <div className="w-5 h-5 lg:w-6 lg:h-6 rounded-full overflow-hidden">
                     <Image
@@ -613,8 +615,8 @@ export default function TokenPage() {
                     />
                   </div>
                   <div>
-                    <p className="text-[#a1a1aa] text-xs">Balance</p>
-                    <p className="text-white font-semibold text-xs lg:text-sm">
+                    <p className="theme-text-secondary text-xs">Balance</p>
+                    <p className="theme-text-primary font-semibold text-xs lg:text-sm">
                       {starkBalance.toLocaleString()}
                     </p>
                   </div>
@@ -623,7 +625,7 @@ export default function TokenPage() {
                     className="ml-1 lg:ml-2 w-5 h-5 lg:w-6 lg:h-6 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center transition-colors duration-200"
                     title="Add STRK"
                   >
-                    <svg className="w-2.5 h-2.5 lg:w-3 lg:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-2.5 h-2.5 lg:w-3 lg:h-3 theme-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                   </button>
@@ -639,7 +641,7 @@ export default function TokenPage() {
               {/* Left Column - Token Info & Chart */}
               <div className="lg:col-span-2 space-y-4 lg:space-y-6">
                 {/* Token Header */}
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                <div className="theme-bg-secondary theme-border-primary border rounded-xl lg:rounded-2xl p-4 lg:p-6">
                   <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-4">
                     <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
                       {token.image_url ? (
@@ -652,7 +654,7 @@ export default function TokenPage() {
                           priority={true}
                           fallbackComponent={
                             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 rounded-full">
-                              <span className="text-white font-bold text-2xl">
+                              <span className="theme-text-primary font-bold text-2xl">
                                 {token.ticker?.charAt(0) || token.name?.charAt(0) || 'T'}
                               </span>
                             </div>
@@ -660,7 +662,7 @@ export default function TokenPage() {
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
-                          <span className="text-white font-bold text-2xl">
+                          <span className="theme-text-primary font-bold text-2xl">
                             {token.ticker?.charAt(0) || token.name?.charAt(0) || 'T'}
                           </span>
                         </div>
@@ -668,15 +670,15 @@ export default function TokenPage() {
                     </div>
                     <div className="flex-1 text-center sm:text-left">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2 space-y-1 sm:space-y-0">
-                        <h2 className="text-white text-xl sm:text-2xl font-bold">{token.name}</h2>
-                        <span className="text-[#a1a1aa] text-base sm:text-lg">${token.ticker}</span>
-                        <button className="text-[#a1a1aa] hover:text-white transition-colors duration-200 hidden sm:inline-block">
+                        <h2 className="theme-text-primary text-xl sm:text-2xl font-bold">{token.name}</h2>
+                        <span className="theme-text-secondary text-base sm:text-lg">${token.ticker}</span>
+                        <button className="theme-text-secondary hover:theme-text-primary transition-colors duration-200 hidden sm:inline-block">
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                           </svg>
                         </button>
                       </div>
-                      <p className="text-[#a1a1aa] text-sm">Created {formatDate(token.created_at)}</p>
+                      <p className="theme-text-secondary text-sm">Created {formatDate(token.created_at)}</p>
                       {token.contract_address && (
                         <a
                           href={`https://voyager.online/contract/${token.contract_address}`}
@@ -691,7 +693,7 @@ export default function TokenPage() {
                   </div>
 
                   {token.description && (
-                    <p className="text-[#a1a1aa] mb-4">{token.description}</p>
+                    <p className="theme-text-secondary mb-4">{token.description}</p>
                   )}
 
                   {/* Social Links */}
@@ -739,16 +741,16 @@ export default function TokenPage() {
                 </div>
 
                 {/* Market Stats */}
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl lg:rounded-2xl p-4 lg:p-6">
-                  <h3 className="text-white text-base lg:text-lg font-semibold mb-3 lg:mb-4">Price</h3>
+                <div className="theme-bg-secondary theme-border-primary border rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                  <h3 className="theme-text-primary text-base lg:text-lg font-semibold mb-3 lg:mb-4">Price</h3>
                   {chartLoading ? (
                     <div className="animate-pulse">
-                      <div className="h-8 bg-[#333333] rounded mb-2"></div>
-                      <div className="h-4 bg-[#333333] rounded w-2/3"></div>
+                      <div className="h-8 theme-bg-accent rounded mb-2"></div>
+                      <div className="h-4 theme-bg-accent rounded w-2/3"></div>
                     </div>
                   ) : (
                     <>
-                      <div className="text-white text-2xl sm:text-3xl font-bold mb-2">
+                      <div className="theme-text-primary text-2xl sm:text-3xl font-bold mb-2">
                         {currentPrice > 0 ? `${currentPrice.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 6
@@ -762,14 +764,14 @@ export default function TokenPage() {
                 </div>
 
                 {/* Price Chart */}
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                <div className="theme-bg-secondary theme-border-primary border rounded-xl lg:rounded-2xl p-4 lg:p-6">
                   <div className="flex items-center justify-between mb-3 lg:mb-4">
-                    <h3 className="text-white text-base lg:text-lg font-semibold">Price Chart (24h)</h3>
+                    <h3 className="theme-text-primary text-base lg:text-lg font-semibold">Price Chart (24h)</h3>
                     <div className="flex space-x-2 text-xs sm:text-sm">
                       <button
                         onClick={() => fetchChartData()}
                         disabled={chartLoading}
-                        className="text-white bg-[#333333] px-2 sm:px-3 py-1 rounded hover:bg-[#444444] transition-colors text-xs sm:text-sm"
+                        className="theme-text-primary theme-bg-accent px-2 sm:px-3 py-1 rounded hover:theme-bg-accent transition-colors text-xs sm:text-sm"
                       >
                         {chartLoading ? 'Loading...' : '24h'}
                       </button>
@@ -777,12 +779,12 @@ export default function TokenPage() {
                   </div>
 
                   {/* Chart */}
-                  <div className="h-48 sm:h-64 bg-[#0a0a0a] rounded-lg">
+                  <div className="h-48 sm:h-64 theme-bg-tertiary rounded-lg">
                     {chartLoading ? (
                       <div className="flex items-center justify-center h-full">
                         <div className="text-center">
                           <div className="animate-spin rounded-full h-8 w-8 border-2 border-white border-t-transparent mx-auto mb-2"></div>
-                          <p className="text-[#a1a1aa]">Loading chart...</p>
+                          <p className="theme-text-secondary">Loading chart...</p>
                         </div>
                       </div>
                     ) : (
@@ -800,14 +802,14 @@ export default function TokenPage() {
               {/* Right Column - Trading */}
               <div className="space-y-4 lg:space-y-6">
                 {/* Trading Section with Toggle */}
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                <div className="theme-bg-secondary theme-border-primary border rounded-xl lg:rounded-2xl p-4 lg:p-6">
                   {/* Buy/Sell Toggle */}
-                  <div className="flex bg-[#0a0a0a] rounded-lg p-1 mb-4 lg:mb-6">
+                  <div className="flex theme-bg-tertiary rounded-lg p-1 mb-4 lg:mb-6">
                     <button
                       onClick={() => setTradingMode('buy')}
                       className={`flex-1 py-2 px-2 sm:px-4 rounded-md font-semibold text-sm sm:text-base transition-all duration-200 ${tradingMode === 'buy'
-                        ? 'bg-green-500 text-white'
-                        : 'text-[#a1a1aa] hover:text-white'
+                        ? 'bg-green-500 theme-text-primary'
+                        : 'theme-text-secondary hover:theme-text-primary'
                         }`}
                     >
                       Buy
@@ -815,8 +817,8 @@ export default function TokenPage() {
                     <button
                       onClick={() => setTradingMode('sell')}
                       className={`flex-1 py-2 px-2 sm:px-4 rounded-md font-semibold text-sm sm:text-base transition-all duration-200 ${tradingMode === 'sell'
-                        ? 'bg-red-500 text-white'
-                        : 'text-[#a1a1aa] hover:text-white'
+                        ? 'bg-red-500 theme-text-primary'
+                        : 'theme-text-secondary hover:theme-text-primary'
                         }`}
                     >
                       Sell
@@ -826,7 +828,7 @@ export default function TokenPage() {
                   {/* Dynamic Trading Form */}
                   <div className="space-y-4">
                     <div>
-                      <label className="text-[#a1a1aa] text-sm block mb-2">
+                      <label className="theme-text-secondary text-sm block mb-2">
                         Amount ({tradingMode === 'buy' ? 'STRK' : token.ticker})
                       </label>
                       <input
@@ -838,7 +840,7 @@ export default function TokenPage() {
                             : setSellAmount(e.target.value)
                         }
                         placeholder="0.00"
-                        className="w-full bg-[#0a0a0a] border border-[#333333] rounded-lg px-4 py-3 text-white placeholder-[#666666] focus:outline-none focus:border-blue-500"
+                        className="w-full theme-bg-tertiary border theme-border-primary rounded-lg px-4 py-3 theme-text-primary placeholder:theme-text-tertiary focus:outline-none focus:border-blue-500"
                       />
                     </div>
 
@@ -867,7 +869,7 @@ export default function TokenPage() {
                       )}
 
                       {quoteLoading && (
-                        <div className="flex items-center text-[#a1a1aa] text-sm">
+                        <div className="flex items-center theme-text-secondary text-sm">
                           <div className="animate-spin rounded-full h-4 w-4 border-2 border-[#a1a1aa] border-t-transparent mr-2"></div>
                           Getting best price...
                         </div>
@@ -881,9 +883,9 @@ export default function TokenPage() {
 
                       {quote && (
                         <div className="space-y-2 text-sm">
-                          <div className="flex justify-between text-[#a1a1aa]">
+                          <div className="flex justify-between theme-text-secondary">
                             <span>You'll receive:</span>
-                            <span className="text-white font-medium">
+                            <span className="theme-text-primary font-medium">
                               ≈ {QuotesService.formatTokenAmount(quote.buyAmount).toLocaleString(undefined, {
                                 minimumFractionDigits: 0,
                                 maximumFractionDigits: 6
@@ -891,29 +893,29 @@ export default function TokenPage() {
                             </span>
                           </div>
 
-                          <div className="flex justify-between text-[#a1a1aa]">
+                          <div className="flex justify-between theme-text-secondary">
                             <span>Est. USD Value:</span>
-                            <span className="text-white">
+                            <span className="theme-text-primary">
                               ${quote.buyAmountInUsd.toFixed(2)}
                             </span>
                           </div>
 
-                          <div className="flex justify-between text-[#a1a1aa]">
+                          <div className="flex justify-between theme-text-secondary">
                             <span>Network Fee:</span>
-                            <span className="text-white">
+                            <span className="theme-text-primary">
                               ${quote.gasFeesInUsd.toFixed(4)}
                             </span>
                           </div>
 
-                          <div className="flex justify-between text-[#a1a1aa]">
+                          <div className="flex justify-between theme-text-secondary">
                             <span>AVNU Fee:</span>
-                            <span className="text-white">
+                            <span className="theme-text-primary">
                               ${quote.avnuFeesInUsd.toFixed(4)}
                             </span>
                           </div>
 
                           {quote.estimatedSlippage > 0 && (
-                            <div className="flex justify-between text-[#a1a1aa]">
+                            <div className="flex justify-between theme-text-secondary">
                               <span>Est. Slippage:</span>
                               <span className="text-yellow-400">
                                 {(quote.estimatedSlippage * 100).toFixed(4)}%
@@ -921,9 +923,9 @@ export default function TokenPage() {
                             </div>
                           )}
 
-                          <div className="flex justify-between text-[#a1a1aa] border-t border-[#333333] pt-2">
+                          <div className="flex justify-between theme-text-secondary border-t theme-border-primary pt-2">
                             <span>Route:</span>
-                            <span className="text-white">
+                            <span className="theme-text-primary">
                               {quote.routes[0]?.name || 'Direct'}
                             </span>
                           </div>
@@ -931,7 +933,7 @@ export default function TokenPage() {
                       )}
 
                       {!quoteLoading && !quoteError && !quote && (tradingMode === 'buy' ? buyAmount : sellAmount) && (
-                        <div className="text-[#a1a1aa] text-sm">
+                        <div className="theme-text-secondary text-sm">
                           Enter an amount to see quote
                         </div>
                       )}
@@ -943,8 +945,8 @@ export default function TokenPage() {
                       className={`w-full font-semibold py-3 rounded-lg transition-colors duration-200 ${!quote || quoteLoading || swapping || (!user?.access_token && !isWalletConnected)
                         ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
                         : tradingMode === 'buy'
-                          ? 'bg-green-500 hover:bg-green-600 text-white'
-                          : 'bg-red-500 hover:bg-red-600 text-white'
+                          ? 'bg-green-500 hover:bg-green-600 theme-text-primary'
+                          : 'bg-red-500 hover:bg-red-600 theme-text-primary'
                         }`}
                     >
                       {swapping ? (
@@ -969,12 +971,12 @@ export default function TokenPage() {
                 </div>
 
                 {/* Holdings */}
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl lg:rounded-2xl p-4 lg:p-6">
-                  <h3 className="text-white text-base lg:text-lg font-semibold mb-3 lg:mb-4">Your Position</h3>
+                <div className="theme-bg-secondary theme-border-primary border rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                  <h3 className="theme-text-primary text-base lg:text-lg font-semibold mb-3 lg:mb-4">Your Position</h3>
                   <div className="space-y-2 lg:space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-[#a1a1aa] text-sm lg:text-base">Balance:</span>
-                      <span className="text-white text-sm lg:text-base font-medium">
+                      <span className="theme-text-secondary text-sm lg:text-base">Balance:</span>
+                      <span className="theme-text-primary text-sm lg:text-base font-medium">
                         {tokenBalance.toLocaleString(undefined, {
                           minimumFractionDigits: 0,
                           maximumFractionDigits: 6
@@ -982,8 +984,8 @@ export default function TokenPage() {
                       </span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-[#a1a1aa] text-sm lg:text-base">Value:</span>
-                      <span className="text-white text-sm lg:text-base font-medium">
+                      <span className="theme-text-secondary text-sm lg:text-base">Value:</span>
+                      <span className="theme-text-primary text-sm lg:text-base font-medium">
                         {tokenBalance > 0 && currentPrice > 0
                           ? `${(tokenBalance * currentPrice).toLocaleString(undefined, {
                             minimumFractionDigits: 2,

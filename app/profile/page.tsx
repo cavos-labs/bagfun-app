@@ -92,10 +92,10 @@ export default function ProfilePage() {
   // Show loading while initializing or loading Cavos profile (only if no wallet connected)
   if (!isInitialized || (loading && !isWalletConnected && user && user.access_token)) {
     return (
-      <div className="min-h-screen bg-[#141414] flex items-center justify-center">
+      <div className="min-h-screen theme-bg-primary flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-2 border-white border-t-transparent mx-auto mb-4"></div>
-          <p className="text-[#a1a1aa]">Loading...</p>
+          <p className="theme-text-secondary">Loading...</p>
         </div>
       </div>
     );
@@ -106,7 +106,7 @@ export default function ProfilePage() {
   
   if (!hasAccess) {
     return (
-      <div className="min-h-screen bg-[#141414]">
+      <div className="min-h-screen theme-bg-primary">
         <Sidebar onBagFunClick={handleBagFunClick} />
         
         <div className="lg:ml-48 flex flex-col min-h-screen pt-16 lg:pt-0">
@@ -114,21 +114,21 @@ export default function ProfilePage() {
             <div className="max-w-2xl mx-auto">
               <div className="flex items-center justify-center py-20">
                 <div className="text-center">
-                  <svg className="w-24 h-24 mx-auto mb-4 text-[#a1a1aa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-24 h-24 mx-auto mb-4 theme-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                   </svg>
                   <h2 
-                    className="text-white text-2xl font-bold mb-4"
+                    className="theme-text-primary text-2xl font-bold mb-4"
                     style={{ fontFamily: 'RamaGothicBold, sans-serif' }}
                   >
                     LOGIN REQUIRED
                   </h2>
-                  <p className="text-[#a1a1aa] mb-6">
+                  <p className="theme-text-secondary mb-6">
                     You need to sign in to view your profile information
                   </p>
                   <button 
                     onClick={() => router.push('/')}
-                    className="bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-200"
+                    className="theme-button-primary px-8 py-3 rounded-lg font-semibold hover:theme-button-secondary transition-colors duration-200"
                   >
                     Go to Home
                   </button>
@@ -142,7 +142,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#141414]">
+    <div className="min-h-screen theme-bg-primary">
       <Sidebar onBagFunClick={handleBagFunClick} />
       
       <div className="lg:ml-48 flex flex-col min-h-screen pt-16 lg:pt-0">
@@ -153,7 +153,7 @@ export default function ProfilePage() {
               <div className="flex items-center justify-center py-20">
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-2 border-white border-t-transparent mx-auto mb-4"></div>
-                  <p className="text-[#a1a1aa]">Loading profile...</p>
+                  <p className="theme-text-secondary">Loading profile...</p>
                 </div>
               </div>
             ) : error ? (
@@ -168,25 +168,25 @@ export default function ProfilePage() {
                       fetchedRef.current = false;
                       fetchProfile();
                     }}
-                    className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200"
+                    className="theme-button-primary px-6 py-2 rounded-lg font-medium hover:theme-button-secondary transition-colors duration-200"
                   >
                     Retry
                   </button>
                 </div>
               </div>
             ) : profile || (isWalletConnected && walletAddress) ? (
-              <div className="bg-[#1a1a1a] border border-[#333333] rounded-2xl p-8">
+              <div className="theme-bg-secondary border theme-border-primary rounded-2xl p-8">
                 {/* Profile Header */}
                 <div className="text-center mb-8">
                   <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-white text-2xl font-bold">
+                    <span className="theme-text-primary text-2xl font-bold">
                       {profile?.email?.charAt(0)?.toUpperCase() || 'W'}
                     </span>
                   </div>
-                  <h2 className="text-white text-xl font-semibold mb-2">
+                  <h2 className="theme-text-primary text-xl font-semibold mb-2">
                     {profile?.email || 'Starknet Wallet'}
                   </h2>
-                  <p className="text-[#a1a1aa] text-sm">
+                  <p className="theme-text-secondary text-sm">
                     {profile ? `Member since ${formatDate(profile.created_at)}` : 'Connected via Starknet Wallet'}
                   </p>
                 </div>
@@ -197,34 +197,34 @@ export default function ProfilePage() {
                   {profile && (
                     <>
                       {/* Email */}
-                      <div className="flex items-center justify-between p-4 bg-[#141414] rounded-lg border border-[#333333]">
+                      <div className="flex items-center justify-between p-4 theme-bg-primary rounded-lg border theme-border-primary">
                         <div>
-                          <p className="text-[#a1a1aa] text-sm mb-1">Email</p>
-                          <p className="text-white font-medium">{profile.email || 'Not provided'}</p>
+                          <p className="theme-text-secondary text-sm mb-1">Email</p>
+                          <p className="theme-text-primary font-medium">{profile.email || 'Not provided'}</p>
                         </div>
                       </div>
 
                       {/* Network */}
-                      <div className="flex items-center justify-between p-4 bg-[#141414] rounded-lg border border-[#333333]">
+                      <div className="flex items-center justify-between p-4 theme-bg-primary rounded-lg border theme-border-primary">
                         <div>
-                          <p className="text-[#a1a1aa] text-sm mb-1">Network</p>
-                          <p className="text-white font-medium capitalize">{profile.network}</p>
+                          <p className="theme-text-secondary text-sm mb-1">Network</p>
+                          <p className="theme-text-primary font-medium capitalize">{profile.network}</p>
                         </div>
                       </div>
                     </>
                   )}
 
                   {/* Wallet Address - show from profile if available, otherwise from wallet */}
-                  <div className="flex items-center justify-between p-4 bg-[#141414] rounded-lg border border-[#333333]">
+                  <div className="flex items-center justify-between p-4 theme-bg-primary rounded-lg border theme-border-primary">
                     <div className="flex-1 min-w-0">
-                      <p className="text-[#a1a1aa] text-sm mb-1">Starknet Wallet Address</p>
-                      <p className="text-white font-medium font-mono text-sm break-all">
+                      <p className="theme-text-secondary text-sm mb-1">Starknet Wallet Address</p>
+                      <p className="theme-text-primary font-medium font-mono text-sm break-all">
                         {profile?.wallet_address || walletAddress}
                       </p>
                     </div>
                     <button
                       onClick={() => navigator.clipboard?.writeText(profile?.wallet_address || walletAddress || '')}
-                      className="ml-3 text-[#a1a1aa] hover:text-white transition-colors duration-200"
+                      className="ml-3 theme-text-secondary hover:theme-text-primary transition-colors duration-200"
                       title="Copy address"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -235,10 +235,10 @@ export default function ProfilePage() {
 
                   {/* Wallet Network - only show for Cavos users */}
                   {profile && (
-                    <div className="flex items-center justify-between p-4 bg-[#141414] rounded-lg border border-[#333333]">
+                    <div className="flex items-center justify-between p-4 theme-bg-primary rounded-lg border theme-border-primary">
                       <div>
-                        <p className="text-[#a1a1aa] text-sm mb-1">Wallet Network</p>
-                        <p className="text-white font-medium capitalize">{profile.wallet_network}</p>
+                        <p className="theme-text-secondary text-sm mb-1">Wallet Network</p>
+                        <p className="theme-text-primary font-medium capitalize">{profile.wallet_network}</p>
                       </div>
                     </div>
                   )}
@@ -249,7 +249,7 @@ export default function ProfilePage() {
                 <div className="mt-8 text-center">
                   <button 
                     onClick={handleBagFunClick}
-                    className="bg-white text-black px-8 py-3 rounded-lg font-semibold hover:bg-gray-200 transition-colors duration-200"
+                    className="theme-button-primary px-8 py-3 rounded-lg font-semibold hover:theme-button-secondary transition-colors duration-200"
                   >
                     Back to Home
                   </button>

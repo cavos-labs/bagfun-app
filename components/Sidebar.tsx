@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
 import { userAtom, isAuthenticatedAtom, signInAtom, signOutAtom } from '@/lib/auth-atoms';
+import { themeAtom, themeClassesAtom, toggleThemeAtom } from '@/lib/theme-atoms';
 import { useWalletConnector } from '@/lib/useWalletConnector';
 import LoginModal from './LoginModal';
 
@@ -18,6 +19,9 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
   const [isAuthenticated] = useAtom(isAuthenticatedAtom);
   const [, signIn] = useAtom(signInAtom);
   const [, signOut] = useAtom(signOutAtom);
+  const [theme] = useAtom(themeAtom);
+  const [themeClasses] = useAtom(themeClassesAtom);
+  const [, toggleTheme] = useAtom(toggleThemeAtom);
   const { isConnected: isWalletConnected, address, walletName } = useWalletConnector();
 
   const toggleMenu = () => {
@@ -44,11 +48,11 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden w-48 h-screen bg-[#141414] border-r border-[#333333] p-8 flex-col items-center fixed left-0 top-0 lg:flex">
+      <div className="hidden w-48 h-screen theme-bg-primary border-r theme-border-primary p-8 flex-col items-center fixed left-0 top-0 lg:flex">
         <div className="mb-8">
           <a
             href="/"
-            className="text-white text-3xl font-bold hover:opacity-80 transition-opacity duration-200 text-center"
+            className="theme-text-primary text-3xl font-bold hover:opacity-80 transition-opacity duration-200 text-center"
             style={{ fontFamily: 'RamaGothicBold, sans-serif' }}
           >
             BAG.FUN
@@ -58,44 +62,66 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
         <nav className="flex flex-col gap-4 items-center w-full">
           <a
             href="/"
-            className="text-white text-sm hover:opacity-80 transition-opacity duration-200 text-center"
+            className="theme-text-primary text-sm hover:opacity-80 transition-opacity duration-200 text-center"
           >
             Home
           </a>
           <a
             href="/profile"
-            className="text-[#a1a1aa] text-sm hover:text-white transition-colors duration-200 text-center"
+            className="theme-text-secondary text-sm hover:theme-text-primary transition-colors duration-200 text-center"
           >
             Profile
           </a>
+          
+          {/* Theme Toggle */}
+          <div className="mt-4 pt-4 border-t theme-border-primary w-full flex justify-center">
+            <button
+              onClick={toggleTheme}
+              className="flex items-center gap-2 theme-text-secondary hover:theme-text-primary transition-colors duration-200"
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {theme === 'dark' ? (
+                // Sun icon for light mode
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                // Moon icon for dark mode
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+              <span className="text-sm">{theme === 'dark' ? 'Light' : 'Dark'}</span>
+            </button>
+          </div>
         </nav>
         
         <div className="mt-auto w-full">
           {isAuthenticated && user?.auth_method === 'wallet' && address ? (
-            <div className="mb-4 p-3 bg-[#1a1a1a] border border-[#333333] rounded-lg">
-              <div className="text-xs text-[#a1a1aa] mb-1">Connected Wallet</div>
-              <div className="text-white text-sm font-medium mb-1">
+            <div className="mb-4 p-3 theme-bg-secondary theme-border-primary border rounded-lg">
+              <div className="text-xs theme-text-secondary mb-1">Connected Wallet</div>
+              <div className="theme-text-primary text-sm font-medium mb-1">
                 {walletName || user.wallet_name || 'Unknown Wallet'}
               </div>
-              <div className="text-xs text-[#a1a1aa] font-mono">
+              <div className="text-xs theme-text-secondary font-mono">
                 {address.slice(0, 6)}...{address.slice(-4)}
               </div>
             </div>
           ) : null}
           <button 
             onClick={handleSignInClick}
-            className="w-full bg-white text-black px-4 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200"
+            className="w-full theme-button-primary hover:theme-button-secondary px-4 py-2 rounded-lg font-medium transition-colors duration-200"
           >
             {isAuthenticated ? 'Sign out' : 'Sign in'}
           </button>
           
           {/* Social Links */}
-          <div className="flex flex-col gap-3 items-center mt-4 pt-4 border-t border-[#333333] w-full">
+          <div className="flex flex-col gap-3 items-center mt-4 pt-4 border-t theme-border-primary w-full">
             <a
               href="https://x.com/bagdotfun"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-[#a1a1aa] hover:text-white transition-colors duration-200"
+              className="flex items-center gap-2 theme-text-secondary hover:theme-text-primary transition-colors duration-200"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -106,7 +132,7 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
               href="https://t.me/+uSxvIY0RTz80MDkx"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-[#a1a1aa] hover:text-white transition-colors duration-200"
+              className="flex items-center gap-2 theme-text-secondary hover:theme-text-primary transition-colors duration-200"
             >
               <img src="/tg-icon.svg" alt="Telegram" className="w-4 h-4 brightness-0 invert" />
               <span className="text-sm">Telegram</span>
@@ -116,10 +142,10 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
       </div>
 
       {/* Mobile Header */}
-      <div className="lg:hidden bg-[#141414] border-b border-[#333333] p-4 flex items-center justify-between fixed top-0 left-0 right-0 z-20">
+      <div className="lg:hidden theme-bg-primary theme-border-primary border-b p-4 flex items-center justify-between fixed top-0 left-0 right-0 z-20">
         <button
           onClick={toggleMenu}
-          className="text-white hover:opacity-80 transition-opacity duration-200"
+          className="theme-text-primary hover:opacity-80 transition-opacity duration-200"
           aria-label="Toggle menu"
         >
           {/* Burger Menu Icon */}
@@ -154,7 +180,7 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
         
         <button 
           onClick={handleSignInClick}
-          className="bg-white text-black px-3 py-1 rounded font-medium text-sm hover:bg-gray-200 transition-colors duration-200"
+          className="theme-button-primary hover:theme-button-secondary px-3 py-1 rounded font-medium text-sm transition-colors duration-200"
         >
           {isAuthenticated ? 'Sign out' : 'Sign in'}
         </button>
@@ -223,7 +249,7 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
                 handleSignInClick();
                 closeMenu();
               }}
-              className="w-full bg-white text-black px-4 py-3 rounded-lg font-medium text-lg hover:bg-gray-200 transition-colors duration-200"
+              className="w-full theme-button-primary hover:theme-button-secondary px-4 py-3 rounded-lg font-medium text-lg transition-colors duration-200"
             >
               {isAuthenticated ? 'Sign out' : 'Sign in'}
             </button>

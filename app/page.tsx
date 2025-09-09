@@ -224,7 +224,7 @@ export default function Home() {
   }, [user, isWalletConnected, walletAddress]);
 
   return (
-    <div className="min-h-screen bg-[#141414]">
+    <div className="min-h-screen theme-bg-primary">
       <Sidebar onBagFunClick={handleBagFunClick} />
 
       <div className="lg:ml-48 flex flex-col min-h-screen pt-16 lg:pt-0">
@@ -233,7 +233,7 @@ export default function Home() {
             {/* Balance Display - Left of search */}
             {(user || isWalletConnected) && (
               <div className="lg:absolute lg:left-0 w-full lg:w-auto">
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl px-3 sm:px-4 py-2 sm:py-3">
+                <div className="theme-bg-secondary theme-border-primary border rounded-xl px-3 sm:px-4 py-2 sm:py-3">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
                     {/* Balance Info */}
                     <div className="flex items-center gap-2">
@@ -247,8 +247,8 @@ export default function Home() {
                         />
                       </div>
                       <div>
-                        <p className="text-[#a1a1aa] text-xs">Balance</p>
-                        <p className="text-white font-semibold text-sm sm:text-base">
+                        <p className="theme-text-secondary text-xs">Balance</p>
+                        <p className="theme-text-primary font-semibold text-sm sm:text-base">
                           {starkBalance.toLocaleString()}
                         </p>
                       </div>
@@ -314,13 +314,13 @@ export default function Home() {
               {/* Filter Button */}
               <button
                 onClick={() => setIsFilterPanelOpen(true)}
-                className="bg-[#1a1a1a] border border-[#333333] rounded-xl px-4 py-3 flex items-center gap-2 hover:bg-[#222222] hover:border-[#444444] transition-all duration-200"
+                className="theme-bg-secondary theme-border-primary border rounded-xl px-4 py-3 flex items-center gap-2 hover:theme-bg-accent hover:theme-border-secondary transition-all duration-200"
                 title="Filter tokens"
               >
-                <svg className="w-5 h-5 text-[#a1a1aa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 theme-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.707A1 1 0 013 7V4z" />
                 </svg>
-                <span className="text-[#a1a1aa] text-sm font-medium hidden sm:inline">Filter</span>
+                <span className="theme-text-secondary text-sm font-medium hidden sm:inline">Filter</span>
                 {(filters.minMarketCap !== null || filters.maxMarketCap !== null || filters.dateRange !== 'all') && (
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                 )}
@@ -348,8 +348,8 @@ export default function Home() {
           {loading ? (
             <div className="flex items-center justify-center min-h-[400px]">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-2 border-white border-t-transparent mx-auto mb-4"></div>
-                <p className="text-[#a1a1aa]">Loading tokens...</p>
+                <div className="animate-spin rounded-full h-12 w-12 border-2 theme-text-primary border-t-transparent mx-auto mb-4"></div>
+                <p className="theme-text-secondary">Loading tokens...</p>
               </div>
             </div>
           ) : error ? (
@@ -371,7 +371,7 @@ export default function Home() {
                 <p className="text-red-400 mb-4">{error}</p>
                 <button
                   onClick={fetchTokens}
-                  className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200"
+                  className="theme-button-primary px-6 py-2 rounded-lg font-medium hover:theme-button-secondary transition-colors duration-200"
                 >
                   Retry
                 </button>
@@ -401,7 +401,7 @@ export default function Home() {
                 {!searchQuery && (
                   <button
                     onClick={handleCreateToken}
-                    className="bg-white text-black px-6 py-2 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200"
+                    className="theme-button-primary px-6 py-2 rounded-lg font-medium hover:theme-button-secondary transition-colors duration-200"
                   >
                     Create First Token
                   </button>

@@ -140,17 +140,17 @@ export default function FilterPanel({
       />
       
       {/* Modal */}
-      <div className={`relative w-full max-w-md mx-4 bg-[#1a1a1a] rounded-2xl p-6 border border-[#333333] transform transition-all duration-200 max-h-[80vh] overflow-y-auto ${
+      <div className={`relative w-full max-w-md mx-4 theme-bg-secondary theme-border-primary border rounded-2xl p-6 transform transition-all duration-200 max-h-[80vh] overflow-y-auto ${
         isVisible 
           ? 'translate-y-0 scale-100 opacity-100' 
           : 'translate-y-4 scale-95 opacity-0'
       }`}>
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-white text-xl font-semibold">Filter Tokens</h2>
+          <h2 className="theme-text-primary text-xl font-semibold">Filter Tokens</h2>
           <button
             onClick={handleClose}
-            className="text-[#a1a1aa] hover:text-white transition-colors duration-200"
+            className="theme-text-secondary hover:theme-text-primary transition-colors duration-200"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -160,7 +160,7 @@ export default function FilterPanel({
 
         {/* Market Cap Filter */}
         <div className="mb-6">
-          <h3 className="text-white text-sm font-medium mb-3">Market Cap</h3>
+          <h3 className="theme-text-primary text-sm font-medium mb-3">Market Cap</h3>
           
           {/* Market Cap Presets */}
           <div className="grid grid-cols-2 gap-2 mb-4">

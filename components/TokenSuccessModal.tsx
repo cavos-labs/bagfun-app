@@ -88,7 +88,7 @@ ${tokenUrl}
     >
       {/* Notification Card */}
       <div
-        className={`relative w-80 max-w-[90vw] bg-black rounded-xl p-4 border border-[#333333] shadow-2xl transform transition-all duration-500 ${
+        className={`relative w-80 max-w-[90vw] theme-bg-primary theme-border-primary border rounded-xl p-4 shadow-2xl transform transition-all duration-500 ${
           isVisible
             ? "translate-y-0 scale-100 opacity-100"
             : "translate-y-2 scale-95 opacity-0"
@@ -97,7 +97,7 @@ ${tokenUrl}
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute top-3 right-3 text-[#a1a1aa] hover:text-white transition-all duration-200 z-10"
+          className="absolute top-3 right-3 theme-text-secondary hover:theme-text-primary transition-all duration-200 z-10"
         >
           <svg
             className="w-4 h-4"
@@ -133,12 +133,12 @@ ${tokenUrl}
           </div>
           <div className="flex-1">
             <h2
-              className="text-white text-sm font-bold"
+              className="theme-text-primary text-sm font-bold"
               style={{ fontFamily: "RamaGothicBold, sans-serif" }}
             >
               TOKEN CREATED!
             </h2>
-            <p className="text-[#a1a1aa] text-xs">Your meme coin is now live</p>
+            <p className="theme-text-secondary text-xs">Your meme coin is now live</p>
           </div>
         </div>
 
@@ -164,9 +164,9 @@ ${tokenUrl}
 
           {/* Token Basic Info */}
           <div className="flex-1">
-            <h3 className="text-white font-bold text-sm">${token.ticker}</h3>
-            <p className="text-[#a1a1aa] text-xs">{token.name}</p>
-            <p className="text-[#a1a1aa] text-xs">
+            <h3 className="theme-text-primary font-bold text-sm">${token.ticker}</h3>
+            <p className="theme-text-secondary text-xs">{token.name}</p>
+            <p className="theme-text-secondary text-xs">
               Supply: {formatAmount(token.amount)}
             </p>
           </div>
@@ -177,7 +177,7 @@ ${tokenUrl}
           {/* Share on X Button */}
           <button
             onClick={handleShareOnX}
-            className="flex-1 bg-[#1a1a1a] border border-[#333333] rounded-lg px-2 py-1.5 text-white font-medium hover:border-[#555555] transition-all duration-200 flex items-center justify-center gap-1"
+            className="flex-1 theme-bg-secondary theme-border-primary border rounded-lg px-2 py-1.5 theme-text-primary font-medium hover:theme-border-secondary transition-all duration-200 flex items-center justify-center gap-1"
           >
             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -191,7 +191,7 @@ ${tokenUrl}
               href={`https://voyager.online/contract/${token.contract_address}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 bg-[#1a1a1a] border border-[#333333] rounded-lg px-2 py-1.5 text-white font-medium hover:border-[#555555] transition-all duration-200 flex items-center justify-center gap-1"
+              className="flex-1 theme-bg-secondary theme-border-primary border rounded-lg px-2 py-1.5 theme-text-primary font-medium hover:theme-border-secondary transition-all duration-200 flex items-center justify-center gap-1"
             >
               <svg
                 className="w-3 h-3"

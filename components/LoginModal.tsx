@@ -137,7 +137,7 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
       />
       
       {/* Modal */}
-      <div className={`relative w-full max-w-md mx-4 bg-black rounded-2xl p-8 border border-[#333333] transform transition-all duration-200 ${
+      <div className={`relative w-full max-w-md mx-4 theme-bg-primary theme-border-primary rounded-2xl p-8 border transform transition-all duration-200 ${
         isVisible && !walletModalOpen
           ? 'translate-y-0 scale-100 opacity-100' 
           : 'translate-y-4 scale-95 opacity-0'
@@ -145,7 +145,7 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-[#a1a1aa] hover:text-white transition-all duration-200 hover:scale-110 active:scale-95"
+          className="absolute top-4 right-4 theme-text-secondary hover:theme-text-primary transition-all duration-200 hover:scale-110 active:scale-95"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -155,12 +155,12 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
         {/* Header */}
         <div className="text-center mb-8">
           <h2 
-            className="text-white text-2xl font-bold mb-2"
+            className="theme-text-primary text-2xl font-bold mb-2"
             style={{ fontFamily: 'RamaGothicBold, sans-serif' }}
           >
             BAG.FUN
           </h2>
-          <p className="text-[#a1a1aa] text-sm transition-all duration-300">
+          <p className="theme-text-secondary text-sm transition-all duration-300">
             {isLoginForm ? 'Sign in to your account' : 'Create your account'}
           </p>
         </div>
@@ -186,7 +186,7 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="w-full bg-[#1a1a1a] border border-[#333333] rounded-lg px-4 py-3 text-white placeholder-[#a1a1aa] focus:outline-none focus:border-[#555555] focus:ring-2 focus:ring-[#555555]/20 transition-all duration-200 hover:border-[#444444]"
+              className="w-full theme-bg-secondary theme-border-primary border rounded-lg px-4 py-3 theme-text-primary placeholder:theme-text-tertiary focus:outline-none focus:theme-border-secondary focus:ring-2 focus:theme-border-secondary/20 transition-all duration-200 hover:theme-border-secondary"
             />
             <div className={`absolute inset-0 rounded-lg transition-opacity duration-200 pointer-events-none ${
               formData.email ? 'opacity-100' : 'opacity-0'
@@ -201,7 +201,7 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
               value={formData.password}
               onChange={handleInputChange}
               required
-              className="w-full bg-[#1a1a1a] border border-[#333333] rounded-lg px-4 py-3 text-white placeholder-[#a1a1aa] focus:outline-none focus:border-[#555555] focus:ring-2 focus:ring-[#555555]/20 transition-all duration-200 hover:border-[#444444]"
+              className="w-full theme-bg-secondary theme-border-primary border rounded-lg px-4 py-3 theme-text-primary placeholder:theme-text-tertiary focus:outline-none focus:theme-border-secondary focus:ring-2 focus:theme-border-secondary/20 transition-all duration-200 hover:theme-border-secondary"
             />
             <div className={`absolute inset-0 rounded-lg transition-opacity duration-200 pointer-events-none ${
               formData.password ? 'opacity-100' : 'opacity-0'
@@ -211,7 +211,7 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
+            className="w-full theme-button-primary hover:theme-button-secondary font-semibold py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
           >
             <span className={`transition-opacity duration-200 ${loading ? 'opacity-0' : 'opacity-100'}`}>
               {isLoginForm ? 'Sign In' : 'Sign Up'}
@@ -221,7 +221,6 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
                 <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-600 border-t-transparent"></div>
               </div>
             )}
-            <div className="absolute inset-0 bg-gray-100 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200 origin-left opacity-50"></div>
           </button>
         </form>
 
@@ -233,14 +232,14 @@ export default function LoginModal({ isOpen, onClose, onSignIn }: LoginModalProp
               setError('');
               setFormData({ email: '', password: '' });
             }}
-            className="text-[#a1a1aa] hover:text-white transition-colors duration-200 text-sm"
+            className="theme-text-secondary hover:theme-text-primary transition-colors duration-200 text-sm"
           >
             {isLoginForm ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
           </button>
         </div>
 
         {/* Divider */}
-        <div className="text-center text-[#a1a1aa] text-sm mb-6">
+        <div className="text-center theme-text-secondary text-sm mb-6">
           or
         </div>
 

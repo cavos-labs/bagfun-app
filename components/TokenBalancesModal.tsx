@@ -156,7 +156,7 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
       />
       
       {/* Modal */}
-      <div className={`relative w-full max-w-lg mx-4 bg-black rounded-2xl p-8 border border-[#333333] transform transition-all duration-200 max-h-[80vh] overflow-hidden ${
+      <div className={`relative w-full max-w-lg mx-4 theme-bg-primary theme-border-primary rounded-2xl p-8 border transform transition-all duration-200 max-h-[80vh] overflow-hidden ${
         isVisible 
           ? 'translate-y-0 scale-100 opacity-100' 
           : 'translate-y-4 scale-95 opacity-0'
@@ -164,7 +164,7 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-[#a1a1aa] hover:text-white transition-all duration-200"
+          className="absolute top-4 right-4 theme-text-secondary hover:theme-text-primary transition-all duration-200"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -174,12 +174,12 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
         {/* Header */}
         <div className="text-center mb-8">
           <h2 
-            className="text-white text-2xl font-bold mb-2"
+            className="theme-text-primary text-2xl font-bold mb-2"
             style={{ fontFamily: 'RamaGothicBold, sans-serif' }}
           >
             MY BAG
           </h2>
-          <p className="text-[#a1a1aa] text-sm">
+          <p className="theme-text-secondary text-sm">
             Your holdings across all tokens
           </p>
         </div>
@@ -190,19 +190,19 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
                 <div className="animate-spin rounded-full h-8 w-8 border-2 border-white border-t-transparent mx-auto mb-4"></div>
-                <p className="text-[#a1a1aa] text-sm">Loading token balances...</p>
+                <p className="theme-text-secondary text-sm">Loading token balances...</p>
               </div>
             </div>
           ) : tokenBalances.length === 0 ? (
             <div className="flex items-center justify-center py-12">
               <div className="text-center">
-                <svg className="w-16 h-16 mx-auto mb-4 text-[#a1a1aa]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-16 h-16 mx-auto mb-4 theme-text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <p className="text-[#a1a1aa] text-sm">
+                <p className="theme-text-secondary text-sm">
                   No token balances found
                 </p>
-                <p className="text-[#666666] text-xs mt-2">
+                <p className="theme-text-tertiary text-xs mt-2">
                   You don't hold any tokens from this platform
                 </p>
               </div>
@@ -210,7 +210,7 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
           ) : (
             <div className="space-y-3">
               {tokenBalances.map(({ token, balance, loading: itemLoading, error }) => (
-                <div key={token.id} className="bg-[#1a1a1a] border border-[#333333] rounded-lg p-4 flex items-center gap-3">
+                <div key={token.id} className="theme-bg-secondary theme-border-primary border rounded-lg p-4 flex items-center gap-3">
                   {/* Token Image */}
                   <div className="w-12 h-12 rounded-full overflow-hidden bg-white flex-shrink-0">
                     {token.image_url ? (
@@ -242,8 +242,8 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-white font-medium">${token.ticker}</p>
-                        <p className="text-[#a1a1aa] text-sm truncate">{token.name}</p>
+                        <p className="theme-text-primary font-medium">${token.ticker}</p>
+                        <p className="theme-text-secondary text-sm truncate">{token.name}</p>
                       </div>
                       <div className="text-right">
                         {itemLoading ? (
@@ -251,7 +251,7 @@ export default function TokenBalancesModal({ isOpen, onClose, tokens }: TokenBal
                         ) : error ? (
                           <p className="text-red-400 text-xs">Error</p>
                         ) : (
-                          <p className="text-white font-semibold">{formatBalance(balance)}</p>
+                          <p className="theme-text-primary font-semibold">{formatBalance(balance)}</p>
                         )}
                       </div>
                     </div>

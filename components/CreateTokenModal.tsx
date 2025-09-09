@@ -464,7 +464,7 @@ export default function CreateTokenModal({
 
         {/* Modal */}
         <div
-          className={`relative w-full max-w-md mx-4 bg-black rounded-2xl p-8 border border-[#333333] transform transition-all duration-200 max-h-[90vh] overflow-y-auto ${isVisible
+          className={`relative w-full max-w-md mx-4 theme-bg-primary theme-border-primary border rounded-2xl p-8 transform transition-all duration-200 max-h-[90vh] overflow-y-auto ${isVisible
             ? "translate-y-0 scale-100 opacity-100"
             : "translate-y-4 scale-95 opacity-0"
             }`}
@@ -472,7 +472,7 @@ export default function CreateTokenModal({
           {/* Close button */}
           <button
             onClick={handleClose}
-            className="absolute top-4 right-4 text-[#a1a1aa] hover:text-white transition-all duration-200"
+            className="absolute top-4 right-4 theme-text-secondary hover:theme-text-primary transition-all duration-200"
           >
             <svg
               className="w-6 h-6"
@@ -492,18 +492,18 @@ export default function CreateTokenModal({
           {/* Header */}
           <div className="text-center mb-8">
             <h2
-              className="text-white text-2xl font-bold mb-2"
+              className="theme-text-primary text-2xl font-bold mb-2"
               style={{ fontFamily: "RamaGothicBold, sans-serif" }}
             >
               CREATE TOKEN
             </h2>
-            <p className="text-[#a1a1aa] text-sm mb-3">
+            <p className="theme-text-secondary text-sm mb-3">
               Launch your meme coin on bag.fun
             </p>
 
             {/* Balance Display */}
             {(user?.wallet_address || isWalletConnected) && (
-              <div className="inline-flex items-center gap-2 bg-[#1a1a1a] border border-[#333333] rounded-lg px-3 py-2">
+              <div className="inline-flex items-center gap-2 theme-bg-secondary theme-border-primary border rounded-lg px-3 py-2">
                 <div className="w-4 h-4 rounded-full overflow-hidden">
                   <Image
                     src="/strk-logo.png"
@@ -553,7 +553,7 @@ export default function CreateTokenModal({
           >
             {/* Image Upload */}
             <div className="space-y-2">
-              <label className="block text-white text-sm font-medium">
+              <label className="block theme-text-primary text-sm font-medium">
                 Token Image
               </label>
               <div className="flex items-center gap-4">
@@ -569,9 +569,9 @@ export default function CreateTokenModal({
                       />
                     </div>
                   ) : (
-                    <div className="w-16 h-16 rounded-full bg-[#1a1a1a] border-2 border-[#333333] flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full theme-bg-secondary theme-border-primary border-2 flex items-center justify-center">
                       <svg
-                        className="w-8 h-8 text-[#a1a1aa]"
+                        className="w-8 h-8 theme-text-secondary"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -589,7 +589,7 @@ export default function CreateTokenModal({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="px-4 py-2 bg-[#1a1a1a] border border-[#333333] rounded-lg text-white text-sm hover:border-[#555555] transition-colors duration-200"
+                  className="px-4 py-2 theme-bg-secondary theme-border-primary border rounded-lg theme-text-primary text-sm hover:theme-border-secondary transition-colors duration-200"
                 >
                   Choose Image
                 </button>
@@ -601,14 +601,14 @@ export default function CreateTokenModal({
                   className="hidden"
                 />
               </div>
-              <p className="text-xs text-[#a1a1aa]">
+              <p className="text-xs theme-text-secondary">
                 Optional. Max 5MB. JPG, PNG, GIF supported.
               </p>
             </div>
 
             {/* Token Name */}
             <div className="relative">
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block theme-text-primary text-sm font-medium mb-2">
                 Token Name *
               </label>
               <input
@@ -618,13 +618,13 @@ export default function CreateTokenModal({
                 value={formData.name || ""}
                 onChange={handleInputChange}
                 required
-                className="w-full bg-[#1a1a1a] border border-[#333333] rounded-lg px-4 py-3 text-white placeholder-[#a1a1aa] focus:outline-none focus:border-[#555555] focus:ring-2 focus:ring-[#555555]/20 transition-all duration-200 hover:border-[#444444]"
+                className="w-full theme-bg-secondary theme-border-primary border rounded-lg px-4 py-3 theme-text-primary placeholder:theme-text-tertiary focus:outline-none focus:theme-border-secondary focus:ring-2 focus:theme-border-secondary/20 transition-all duration-200 hover:theme-border-secondary"
               />
             </div>
 
             {/* Token Ticker */}
             <div className="relative">
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block theme-text-primary text-sm font-medium mb-2">
                 Token Ticker *
               </label>
               <input
@@ -640,16 +640,16 @@ export default function CreateTokenModal({
                 required
                 maxLength={16}
                 pattern="[A-Z0-9]{1,16}"
-                className="w-full bg-[#1a1a1a] border border-[#333333] rounded-lg px-4 py-3 text-white placeholder-[#a1a1aa] focus:outline-none focus:border-[#555555] focus:ring-2 focus:ring-[#555555]/20 transition-all duration-200 hover:border-[#444444]"
+                className="w-full theme-bg-secondary theme-border-primary border rounded-lg px-4 py-3 theme-text-primary placeholder:theme-text-tertiary focus:outline-none focus:theme-border-secondary focus:ring-2 focus:theme-border-secondary/20 transition-all duration-200 hover:theme-border-secondary"
               />
-              <p className="text-xs text-[#a1a1aa] mt-1">
+              <p className="text-xs theme-text-tertiary mt-1">
                 1-16 characters, letters and numbers only
               </p>
             </div>
 
             {/* Website */}
             <div className="relative">
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block theme-text-primary text-sm font-medium mb-2">
                 Website
               </label>
               <input
@@ -658,16 +658,16 @@ export default function CreateTokenModal({
                 placeholder="https://example.com"
                 value={formData.website || ""}
                 onChange={handleInputChange}
-                className="w-full bg-[#1a1a1a] border border-[#333333] rounded-lg px-4 py-3 text-white placeholder-[#a1a1aa] focus:outline-none focus:border-[#555555] focus:ring-2 focus:ring-[#555555]/20 transition-all duration-200 hover:border-[#444444]"
+                className="w-full theme-bg-secondary theme-border-primary border rounded-lg px-4 py-3 theme-text-primary placeholder:theme-text-tertiary focus:outline-none focus:theme-border-secondary focus:ring-2 focus:theme-border-secondary/20 transition-all duration-200 hover:theme-border-secondary"
               />
-              <p className="text-xs text-[#a1a1aa] mt-1">
+              <p className="text-xs theme-text-tertiary mt-1">
                 Optional. Project website or social media link
               </p>
             </div>
 
             {/* Telegram Group */}
             <div className="relative">
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block theme-text-primary text-sm font-medium mb-2">
                 <span className="flex items-center gap-2">
                   <img src="/tg-icon.svg" alt="Telegram" className="w-4 h-4 brightness-0 invert" />
                   Telegram Group
@@ -679,16 +679,16 @@ export default function CreateTokenModal({
                 placeholder="https://t.me/yourgroup"
                 value={formData.telegram_url || ""}
                 onChange={handleInputChange}
-                className="w-full bg-[#1a1a1a] border border-[#333333] rounded-lg px-4 py-3 text-white placeholder-[#a1a1aa] focus:outline-none focus:border-[#555555] focus:ring-2 focus:ring-[#555555]/20 transition-all duration-200 hover:border-[#444444]"
+                className="w-full theme-bg-secondary theme-border-primary border rounded-lg px-4 py-3 theme-text-primary placeholder:theme-text-tertiary focus:outline-none focus:theme-border-secondary focus:ring-2 focus:theme-border-secondary/20 transition-all duration-200 hover:theme-border-secondary"
               />
-              <p className="text-xs text-[#a1a1aa] mt-1">
+              <p className="text-xs theme-text-tertiary mt-1">
                 Optional Telegram group or channel
               </p>
             </div>
 
             {/* X (Twitter) Profile */}
             <div className="relative">
-              <label className="block text-white text-sm font-medium mb-2">
+              <label className="block theme-text-primary text-sm font-medium mb-2">
                 <span className="flex items-center gap-2">
                   <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -702,9 +702,9 @@ export default function CreateTokenModal({
                 placeholder="https://x.com/yourprofile"
                 value={formData.x_url || ""}
                 onChange={handleInputChange}
-                className="w-full bg-[#1a1a1a] border border-[#333333] rounded-lg px-4 py-3 text-white placeholder-[#a1a1aa] focus:outline-none focus:border-[#555555] focus:ring-2 focus:ring-[#555555]/20 transition-all duration-200 hover:border-[#444444]"
+                className="w-full theme-bg-secondary theme-border-primary border rounded-lg px-4 py-3 theme-text-primary placeholder:theme-text-tertiary focus:outline-none focus:theme-border-secondary focus:ring-2 focus:theme-border-secondary/20 transition-all duration-200 hover:theme-border-secondary"
               />
-              <p className="text-xs text-[#a1a1aa] mt-1">
+              <p className="text-xs theme-text-tertiary mt-1">
                 Optional X (Twitter) profile
               </p>
             </div>
@@ -716,7 +716,7 @@ export default function CreateTokenModal({
                 (!user?.wallet_address && !isWalletConnected) ||
                 (starkBalance !== null && starkBalance < 20)
               }
-              className="w-full bg-white text-black font-semibold py-3 rounded-lg hover:bg-gray-200 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
+              className="w-full bg-blue-500 hover:bg-blue-600 theme-text-primary font-semibold py-3 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group"
             >
               <span
                 className={`transition-opacity duration-200 ${loading ? "opacity-0" : "opacity-100"
