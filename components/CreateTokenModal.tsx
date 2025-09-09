@@ -9,7 +9,7 @@ import Image from "next/image";
 import { CavosAuth, formatAmount, getBalanceOf } from "cavos-service-sdk";
 import { Contract, CallData, cairo, RpcProvider } from "starknet";
 import { MEMECOIN_FACTORY_ABI } from "@/app/abis/MemecoinFactory";
-import { getERC20Balance } from "@/lib/utils";
+import { getERC20Balance, formatAddress } from "@/lib/utils";
 import axios from "axios";
 
 interface CreateTokenModalProps {
@@ -52,7 +52,7 @@ export default function CreateTokenModal({
       try {
         const currentBalance = await getERC20Balance(
           walletAddress,
-          "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
+          formatAddress("0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D"),
           18
         );
         setStarkBalance(currentBalance);
@@ -64,7 +64,7 @@ export default function CreateTokenModal({
       try {
         const result = await getBalanceOf(
           walletAddr,
-          "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
+          formatAddress("0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D"),
           "18",
           process.env.NEXT_PUBLIC_CAVOS_APP_ID || ""
         );
@@ -95,14 +95,14 @@ export default function CreateTokenModal({
     console.log("Executing create token transaction...");
     const createTxResult = await walletAccount.execute({
       contractAddress:
-        "0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc",
+        formatAddress("0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc"),
       entrypoint: "create_memecoin",
       calldata: CallData.compile([
         walletAddress,
         formData.name,
         formData.ticker,
         await formatAmount("10000000000"),
-        "0x063ee878d3559583ceae80372c6088140e1180d9893aa65fbefc81f45ddaaa17",
+        formatAddress("0x063ee878d3559583ceae80372c6088140e1180d9893aa65fbefc81f45ddaaa17"),
       ]),
     });
     console.log("Create token transaction:", createTxResult);
@@ -139,26 +139,26 @@ export default function CreateTokenModal({
     const launchTxResult = await walletAccount.execute([
       {
         contractAddress:
-          "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          formatAddress("0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"),
         entrypoint: "transfer",
         calldata: CallData.compile([
-          "0x0656b69B8CcFE63932698c7f7e24Aa2745887240F2BDE82b66DeF746fa0FCaF2",
+          formatAddress("0x0656b69B8CcFE63932698c7f7e24Aa2745887240F2BDE82b66DeF746fa0FCaF2"),
           await formatAmount(20)
         ]),
       },
       {
         contractAddress:
-          "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+          formatAddress("0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"),
         entrypoint: "transfer",
         calldata: CallData.compile([
-          "0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc",
+          formatAddress("0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc"),
           "16091183952307027001",
           "0",
         ]),
       },
       {
         contractAddress:
-          "0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc",
+          formatAddress("0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc"),
         entrypoint: "launch_on_ekubo",
         calldata: CallData.compile([
           contractAddress,
@@ -258,14 +258,14 @@ export default function CreateTokenModal({
         const calls = [
           {
             contractAddress:
-              "0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc",
+              formatAddress("0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc"),
             entrypoint: "create_memecoin",
             calldata: [
               user.wallet_address,
               formData.name,
               formData.ticker,
               await formatAmount("10000000000"),
-              "0x063ee878d3559583ceae80372c6088140e1180d9893aa65fbefc81f45ddaaa17",
+              formatAddress("0x063ee878d3559583ceae80372c6088140e1180d9893aa65fbefc81f45ddaaa17"),
             ],
           },
         ];
@@ -301,26 +301,26 @@ export default function CreateTokenModal({
         const launchCalls = [
           {
             contractAddress:
-              "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+              formatAddress("0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"),
             entrypoint: "transfer",
             calldata: [
-              "0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc",
+              formatAddress("0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc"),
               "16091183952307027001",
               "0",
             ],
           },
           {
             contractAddress:
-              "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+              formatAddress("0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"),
             entrypoint: "transfer",
             calldata: [
-              "0x0656b69B8CcFE63932698c7f7e24Aa2745887240F2BDE82b66DeF746fa0FCaF2",
+              formatAddress("0x0656b69B8CcFE63932698c7f7e24Aa2745887240F2BDE82b66DeF746fa0FCaF2"),
               await formatAmount(20)
             ],
           },
           {
             contractAddress:
-              "0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc",
+              formatAddress("0x01a46467a9246f45c8c340f1f155266a26a71c07bd55d36e8d1c7d0d438a2dbc"),
             entrypoint: "launch_on_ekubo",
             calldata: [
               address,
@@ -669,9 +669,7 @@ export default function CreateTokenModal({
             <div className="relative">
               <label className="block text-white text-sm font-medium mb-2">
                 <span className="flex items-center gap-2">
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm5.568 8.16l-1.61 7.589c-.12.556-.437.695-.886.433l-2.448-1.803-1.18 1.136c-.131.131-.241.241-.495.241l.177-2.506 4.589-4.147c.199-.177-.044-.275-.309-.098l-5.674 3.571-2.447-.765c-.532-.166-.542-.532.111-.787l9.552-3.684c.443-.166.832.099.687.787z" />
-                  </svg>
+                  <img src="/tg-icon.svg" alt="Telegram" className="w-4 h-4 brightness-0 invert" />
                   Telegram Group
                 </span>
               </label>

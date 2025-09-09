@@ -17,7 +17,7 @@ import { getBalanceOf } from "cavos-service-sdk";
 import { userAtom } from "@/lib/auth-atoms";
 import { useAtom } from "jotai";
 import { useWalletConnector } from "@/lib/useWalletConnector";
-import { getERC20Balance } from "@/lib/utils";
+import { getERC20Balance, formatAddress } from "@/lib/utils";
 import { useBulkImagePreloader } from "@/lib/useImagePreloader";
 
 export default function Home() {
@@ -194,7 +194,7 @@ export default function Home() {
         try {
           const currentBalance = await getERC20Balance(
             walletAddress,
-            "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
+            formatAddress("0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D"),
             18
           );
           setStarkBalance(currentBalance);
@@ -206,7 +206,7 @@ export default function Home() {
         try {
           const currentBalance = await getBalanceOf(
             user.wallet_address,
-            "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D",
+            formatAddress("0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D"),
             "18",
             process.env.NEXT_PUBLIC_CAVOS_APP_ID || ""
           );

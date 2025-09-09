@@ -88,6 +88,30 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
           >
             {isAuthenticated ? 'Sign out' : 'Sign in'}
           </button>
+          
+          {/* Social Links */}
+          <div className="flex flex-col gap-3 items-center mt-4 pt-4 border-t border-[#333333] w-full">
+            <a
+              href="https://x.com/bagdotfun"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-[#a1a1aa] hover:text-white transition-colors duration-200"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              <span className="text-sm">Twitter</span>
+            </a>
+            <a
+              href="https://t.me/+uSxvIY0RTz80MDkx"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-[#a1a1aa] hover:text-white transition-colors duration-200"
+            >
+              <img src="/tg-icon.svg" alt="Telegram" className="w-4 h-4 brightness-0 invert" />
+              <span className="text-sm">Telegram</span>
+            </a>
+          </div>
         </div>
       </div>
 
@@ -120,13 +144,13 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
           </svg>
         </button>
 
-        <button
-          onClick={onBagFunClick}
+        <a
+          href="/"
           className="text-white text-xl font-bold hover:opacity-80 transition-opacity duration-200"
           style={{ fontFamily: 'RamaGothicBold, sans-serif' }}
         >
           BAG.FUN
-        </button>
+        </a>
         
         <button 
           onClick={handleSignInClick}
@@ -203,6 +227,32 @@ export default function Sidebar({ onBagFunClick }: SidebarProps) {
             >
               {isAuthenticated ? 'Sign out' : 'Sign in'}
             </button>
+            
+            {/* Social Links */}
+            <div className="flex flex-col gap-4 mt-4 pt-4 border-t border-[#333333]">
+              <a
+                href="https://x.com/bagdotfun"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenu}
+                className="flex items-center gap-3 text-[#a1a1aa] hover:text-white transition-colors duration-200"
+              >
+                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+                <span className="text-lg">Twitter</span>
+              </a>
+              <a
+                href="https://t.me/+uSxvIY0RTz80MDkx"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenu}
+                className="flex items-center gap-3 text-[#a1a1aa] hover:text-white transition-colors duration-200"
+              >
+                <img src="/tg-icon.svg" alt="Telegram" className="w-5 h-5 brightness-0 invert" />
+                <span className="text-lg">Telegram</span>
+              </a>
+            </div>
           </div>
         </div>
       </div>

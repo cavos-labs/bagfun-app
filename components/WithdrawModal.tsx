@@ -5,6 +5,7 @@ import { useAtom } from "jotai";
 import { userAtom } from "@/lib/auth-atoms";
 import { CavosAuth } from "cavos-service-sdk";
 import { cairo } from "starknet";
+import { formatAddress } from "@/lib/utils";
 
 interface WithdrawModalProps {
   isOpen: boolean;
@@ -86,7 +87,7 @@ export default function WithdrawModal({
       const calls = [
         {
           contractAddress:
-            "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d",
+            formatAddress("0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"),
           entrypoint: "transfer",
           calldata: [
             recipientAddress.trim(),

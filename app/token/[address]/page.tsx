@@ -11,7 +11,7 @@ import { useWalletConnector } from '@/lib/useWalletConnector';
 import { QuotesService, AVNUQuote } from '@/lib/quotesService';
 import { SwapService, SwapParams } from '@/lib/swapService';
 import { formatAmount, getBalanceOf } from 'cavos-service-sdk';
-import { getERC20Balance } from '@/lib/utils';
+import { getERC20Balance, formatAddress } from '@/lib/utils';
 import { ChartService, ChartDataPoint } from '@/lib/chartService';
 import LineChart from '@/components/LineChart';
 import DepositModal from '@/components/DepositModal';
@@ -68,7 +68,7 @@ export default function TokenPage() {
   const address = params?.address as string;
 
   // STRK token address on Starknet mainnet
-  const STRK_TOKEN_ADDRESS = "0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D";
+  const STRK_TOKEN_ADDRESS = formatAddress("0x04718f5a0Fc34cC1AF16A1cdee98fFB20C31f5cD61D6Ab07201858f4287c938D");
 
   useEffect(() => {
     if (address) {
@@ -235,6 +235,8 @@ export default function TokenPage() {
       }
 
       const foundToken = tokensArray.find((t: Token) => t.contract_address === address);
+
+      console.log(foundToken);
 
       if (foundToken) {
         setToken(foundToken);
@@ -599,9 +601,9 @@ export default function TokenPage() {
 
             {/* Balance Display */}
             {(user || isWalletConnected) && (
-              <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl px-4 py-2">
+              <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl px-3 lg:px-4 py-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full overflow-hidden">
+                  <div className="w-5 h-5 lg:w-6 lg:h-6 rounded-full overflow-hidden">
                     <Image
                       src="/strk-logo.png"
                       alt="STRK"
@@ -612,16 +614,16 @@ export default function TokenPage() {
                   </div>
                   <div>
                     <p className="text-[#a1a1aa] text-xs">Balance</p>
-                    <p className="text-white font-semibold text-sm">
+                    <p className="text-white font-semibold text-xs lg:text-sm">
                       {starkBalance.toLocaleString()}
                     </p>
                   </div>
                   <button
                     onClick={handleDepositClick}
-                    className="ml-2 w-6 h-6 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center transition-colors duration-200"
+                    className="ml-1 lg:ml-2 w-5 h-5 lg:w-6 lg:h-6 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center transition-colors duration-200"
                     title="Add STRK"
                   >
-                    <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-2.5 h-2.5 lg:w-3 lg:h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
                   </button>
@@ -633,13 +635,13 @@ export default function TokenPage() {
 
         <main className="flex-1 p-4 lg:p-8">
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
               {/* Left Column - Token Info & Chart */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-4 lg:space-y-6">
                 {/* Token Header */}
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-2xl p-6">
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="w-16 h-16 rounded-full overflow-hidden flex-shrink-0">
+                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-4">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden flex-shrink-0 mx-auto sm:mx-0">
                       {token.image_url ? (
                         <OptimizedImage
                           src={token.image_url}
@@ -664,11 +666,11 @@ export default function TokenPage() {
                         </div>
                       )}
                     </div>
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <h2 className="text-white text-2xl font-bold">{token.name}</h2>
-                        <span className="text-[#a1a1aa] text-lg">{token.ticker}</span>
-                        <button className="text-[#a1a1aa] hover:text-white transition-colors duration-200">
+                    <div className="flex-1 text-center sm:text-left">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-2 space-y-1 sm:space-y-0">
+                        <h2 className="text-white text-xl sm:text-2xl font-bold">{token.name}</h2>
+                        <span className="text-[#a1a1aa] text-base sm:text-lg">${token.ticker}</span>
+                        <button className="text-[#a1a1aa] hover:text-white transition-colors duration-200 hidden sm:inline-block">
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                           </svg>
@@ -693,15 +695,15 @@ export default function TokenPage() {
                   )}
 
                   {/* Social Links */}
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-2 sm:gap-3">
                     {token.website && (
                       <a
                         href={token.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm transition-colors duration-200"
+                        className="flex items-center gap-1.5 sm:gap-2 text-blue-400 hover:text-blue-300 text-xs sm:text-sm transition-colors duration-200"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9v-9m0 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 919-9" />
                         </svg>
                         Website
@@ -713,11 +715,9 @@ export default function TokenPage() {
                         href={token.telegram_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm transition-colors duration-200"
+                        className="flex items-center gap-1.5 sm:gap-2 text-blue-400 hover:text-blue-300 text-xs sm:text-sm transition-colors duration-200"
                       >
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm5.568 8.16l-1.61 7.589c-.12.556-.437.695-.886.433l-2.448-1.803-1.18 1.136c-.131.131-.241.241-.495.241l.177-2.506 4.589-4.147c.199-.177-.044-.275-.309-.098l-5.674 3.571-2.447-.765c-.532-.166-.542-.532.111-.787l9.552-3.684c.443-.166.832.099.687.787z"/>
-                        </svg>
+                        <img src="/tg-icon.svg" alt="Telegram" className="w-3 h-3 sm:w-4 sm:h-4" style={{filter: 'brightness(0) saturate(100%) invert(60%) sepia(96%) saturate(4037%) hue-rotate(212deg) brightness(91%) contrast(89%)'}} />
                         Telegram
                       </a>
                     )}
@@ -727,9 +727,9 @@ export default function TokenPage() {
                         href={token.x_url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 text-blue-400 hover:text-blue-300 text-sm transition-colors duration-200"
+                        className="flex items-center gap-1.5 sm:gap-2 text-blue-400 hover:text-blue-300 text-xs sm:text-sm transition-colors duration-200"
                       >
-                        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                        <svg className="w-3 h-3 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="currentColor">
                           <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                         </svg>
                         X
@@ -739,8 +739,8 @@ export default function TokenPage() {
                 </div>
 
                 {/* Market Stats */}
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-2xl p-6">
-                  <h3 className="text-white text-lg font-semibold mb-4">Price</h3>
+                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                  <h3 className="text-white text-base lg:text-lg font-semibold mb-3 lg:mb-4">Price</h3>
                   {chartLoading ? (
                     <div className="animate-pulse">
                       <div className="h-8 bg-[#333333] rounded mb-2"></div>
@@ -748,13 +748,13 @@ export default function TokenPage() {
                     </div>
                   ) : (
                     <>
-                      <div className="text-white text-3xl font-bold mb-2">
+                      <div className="text-white text-2xl sm:text-3xl font-bold mb-2">
                         {currentPrice > 0 ? `${currentPrice.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                           maximumFractionDigits: 6
                         })} STRK` : 'N/A'}
                       </div>
-                      <div className={`text-sm ${priceChange.isPositive ? 'text-green-400' : 'text-red-400'}`}>
+                      <div className={`text-xs sm:text-sm ${priceChange.isPositive ? 'text-green-400' : 'text-red-400'}`}>
                         {priceChange.isPositive ? '+' : ''}{priceChange.change.toFixed(6)} STRK ({priceChange.isPositive ? '+' : ''}{priceChange.changePercent.toFixed(2)}%) 24hr
                       </div>
                     </>
@@ -762,14 +762,14 @@ export default function TokenPage() {
                 </div>
 
                 {/* Price Chart */}
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-2xl p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-white text-lg font-semibold">Price Chart (24h)</h3>
-                    <div className="flex space-x-2 text-sm">
+                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                  <div className="flex items-center justify-between mb-3 lg:mb-4">
+                    <h3 className="text-white text-base lg:text-lg font-semibold">Price Chart (24h)</h3>
+                    <div className="flex space-x-2 text-xs sm:text-sm">
                       <button
                         onClick={() => fetchChartData()}
                         disabled={chartLoading}
-                        className="text-white bg-[#333333] px-3 py-1 rounded hover:bg-[#444444] transition-colors"
+                        className="text-white bg-[#333333] px-2 sm:px-3 py-1 rounded hover:bg-[#444444] transition-colors text-xs sm:text-sm"
                       >
                         {chartLoading ? 'Loading...' : '24h'}
                       </button>
@@ -777,7 +777,7 @@ export default function TokenPage() {
                   </div>
 
                   {/* Chart */}
-                  <div className="h-64 bg-[#0a0a0a] rounded-lg">
+                  <div className="h-48 sm:h-64 bg-[#0a0a0a] rounded-lg">
                     {chartLoading ? (
                       <div className="flex items-center justify-center h-full">
                         <div className="text-center">
@@ -798,14 +798,14 @@ export default function TokenPage() {
               </div>
 
               {/* Right Column - Trading */}
-              <div className="space-y-6">
+              <div className="space-y-4 lg:space-y-6">
                 {/* Trading Section with Toggle */}
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-2xl p-6">
+                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl lg:rounded-2xl p-4 lg:p-6">
                   {/* Buy/Sell Toggle */}
-                  <div className="flex bg-[#0a0a0a] rounded-lg p-1 mb-6">
+                  <div className="flex bg-[#0a0a0a] rounded-lg p-1 mb-4 lg:mb-6">
                     <button
                       onClick={() => setTradingMode('buy')}
-                      className={`flex-1 py-2 px-4 rounded-md font-semibold transition-all duration-200 ${tradingMode === 'buy'
+                      className={`flex-1 py-2 px-2 sm:px-4 rounded-md font-semibold text-sm sm:text-base transition-all duration-200 ${tradingMode === 'buy'
                         ? 'bg-green-500 text-white'
                         : 'text-[#a1a1aa] hover:text-white'
                         }`}
@@ -814,7 +814,7 @@ export default function TokenPage() {
                     </button>
                     <button
                       onClick={() => setTradingMode('sell')}
-                      className={`flex-1 py-2 px-4 rounded-md font-semibold transition-all duration-200 ${tradingMode === 'sell'
+                      className={`flex-1 py-2 px-2 sm:px-4 rounded-md font-semibold text-sm sm:text-base transition-all duration-200 ${tradingMode === 'sell'
                         ? 'bg-red-500 text-white'
                         : 'text-[#a1a1aa] hover:text-white'
                         }`}
@@ -969,21 +969,21 @@ export default function TokenPage() {
                 </div>
 
                 {/* Holdings */}
-                <div className="bg-[#1a1a1a] border border-[#333333] rounded-2xl p-6">
-                  <h3 className="text-white text-lg font-semibold mb-4">Your Position</h3>
-                  <div className="space-y-3">
-                    <div className="flex justify-between">
-                      <span className="text-[#a1a1aa]">Balance:</span>
-                      <span className="text-white">
+                <div className="bg-[#1a1a1a] border border-[#333333] rounded-xl lg:rounded-2xl p-4 lg:p-6">
+                  <h3 className="text-white text-base lg:text-lg font-semibold mb-3 lg:mb-4">Your Position</h3>
+                  <div className="space-y-2 lg:space-y-3">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[#a1a1aa] text-sm lg:text-base">Balance:</span>
+                      <span className="text-white text-sm lg:text-base font-medium">
                         {tokenBalance.toLocaleString(undefined, {
                           minimumFractionDigits: 0,
                           maximumFractionDigits: 6
                         })} {token.ticker}
                       </span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-[#a1a1aa]">Value:</span>
-                      <span className="text-white">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[#a1a1aa] text-sm lg:text-base">Value:</span>
+                      <span className="text-white text-sm lg:text-base font-medium">
                         {tokenBalance > 0 && currentPrice > 0
                           ? `${(tokenBalance * currentPrice).toLocaleString(undefined, {
                             minimumFractionDigits: 2,
