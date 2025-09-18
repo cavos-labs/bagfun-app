@@ -25,6 +25,11 @@ BagFun App is the primary frontend application for the BagFun memecoin trading p
 - **Axios 1.11** - HTTP client
 - **@uniswap/sdk-core 7.7** - Trading calculations
 
+### UI & Theming
+- **Jotai** for state management including theme atoms
+- **CSS Custom Properties** for dynamic theming
+- **Theme System** with light/dark mode support
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -104,16 +109,21 @@ bagfun-app/
 │   ├── AccessProvider.tsx        # Authentication guard
 │   ├── CreateTokenModal.tsx      # Token creation modal
 │   ├── DepositModal.tsx          # Deposit funds modal
+│   ├── FilterPanel.tsx           # Token filtering interface
 │   ├── InvitationGate.tsx        # Beta access gate
 │   ├── LineChart.tsx             # Price chart component
 │   ├── LoginModal.tsx            # Authentication modal
+│   ├── OptimizedImage.tsx        # IPFS image loader with fallbacks
 │   ├── SearchBar.tsx             # Token search
-│   ├── Sidebar.tsx               # Navigation sidebar
+│   ├── Sidebar.tsx               # Navigation sidebar (with theme toggle)
+│   ├── ThemeProvider.tsx         # Theme system provider
 │   ├── TokenBalancesModal.tsx    # Portfolio modal
 │   ├── TokenCard.tsx             # Token display card
+│   ├── TokenSuccessModal.tsx     # Token creation success modal
 │   └── WithdrawModal.tsx         # Withdraw funds modal
 ├── lib/                          # Core services & utilities
 │   ├── auth-atoms.ts             # Authentication state
+│   ├── theme-atoms.ts            # Theme state management (light/dark)
 │   ├── wallet-atoms.ts           # Wallet connection state
 │   ├── useWalletConnector.ts     # Wallet connection hook
 │   ├── auth.ts                   # Auth service
@@ -122,6 +132,7 @@ bagfun-app/
 │   ├── quotesService.ts          # Price quotes service
 │   ├── profileService.ts         # User profile service
 │   ├── chartService.ts           # Chart data service
+│   ├── marketService.ts          # Market cap data service
 │   ├── utils.ts                  # Helper utilities
 │   └── mockData.ts               # Development data
 ├── types/                        # TypeScript definitions
@@ -201,16 +212,30 @@ bagfun-app/
 - **Heading Font**: Rama Gothic Bold (custom font)
 - **Body Font**: System fonts (Inter fallback)
 
-### Color Palette
-- **Primary Background**: `#141414` (Dark theme)
-- **Card Backgrounds**: `#1a1a1a` (Dark gray)
-- **Text Colors**:
-  - Primary: `#ffffff` (White)
-  - Secondary: `#a1a1aa` (Gray)
-- **Accent Colors**:
-  - Success: `#10b981` (Green)
-  - Warning: `#ef4444` (Red)
-  - Primary: Blue gradient
+### Theming System
+**Dynamic Light/Dark Theme Support:**
+- CSS Custom Properties for theme switching
+- Jotai atoms for theme state management
+- Theme utility classes for consistent styling
+- Automatic theme persistence in localStorage
+
+**Dark Theme (Default):**
+- Primary Background: `#141414`
+- Card Background: `#1a1a1a` 
+- Tertiary Background: `#0a0a0a`
+- Text Primary: `#ffffff`
+- Text Secondary: `#a1a1aa`
+
+**Light Theme:**
+- Primary Background: `#f9fafb`
+- Card Background: `#ffffff`
+- Tertiary Background: `#f3f4f6`
+- Text Primary: `#111827`
+- Text Secondary: `#6b7280`
+
+**Button Logic:**
+- Dark theme: Light buttons with dark text
+- Light theme: Dark buttons with light text
 
 ### Component Patterns
 

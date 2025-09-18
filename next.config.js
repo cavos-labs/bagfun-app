@@ -51,6 +51,12 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'dosis.fun',
+        port: '',
+        pathname: '/**',
+      },
     ],
     // Optimize image loading
     formats: ['image/webp', 'image/avif'],

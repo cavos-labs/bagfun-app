@@ -466,9 +466,6 @@ export default function TokenPage() {
         slippageBps: 50, // 0.5% slippage
       };
 
-
-      // REAL IMPLEMENTATION - Starknet wallet contract calls
-
       if (!walletAccount) {
         
         // Try to reconnect if the account is missing but wallet is connected
