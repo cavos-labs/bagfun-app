@@ -53,7 +53,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'dosis.fun',
+        hostname: 'tomato-rear-planarian-644.mypinata.cloud',
         port: '',
         pathname: '/**',
       },
